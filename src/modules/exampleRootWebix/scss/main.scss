@@ -1,0 +1,14 @@
+$grey-color: #eceff1;
+$border_color: #ddd;
+
+.onedeck_toolbar {
+  background-color: $grey-color;
+}
+
+.onedeck_root_menu {
+  background-color: $grey-color;
+}
+.onedeck_root_menu .webix_list_item {
+  line-height: 35px;
+  border-bottom-color: $border_color;
+}
