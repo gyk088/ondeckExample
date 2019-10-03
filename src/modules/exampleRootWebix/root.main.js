@@ -31,11 +31,10 @@ export default class Root extends RootModule {
       this.Menu.show()
     })
 
-    this.Menu.$on("initModule", moduleName =>
-      this.$$initModule({
-        module: moduleName,
-        path: `/${moduleName}`,
-        pushState: true
+    this.Menu.$on("initModule", data =>
+      this.$$rout({
+        path: data.url,
+        state: data.state
       })
     )
 

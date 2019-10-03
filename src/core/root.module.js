@@ -14,6 +14,8 @@ export default class RootMediator {
     this.$$modules = {}
     // this object contains all mediator events
     this.$$сhannels = {}
+    // this object contains current module
+    this.$$currentModule = {}
 
     this.$$createModules()
     this.$$eventHandler()
@@ -83,14 +85,24 @@ export default class RootMediator {
       moduleData.module = "main"
       moduleData.path = "/"
     }
+
     if (!this.$$modules[moduleData.module])
       return console.error("no such module:", moduleData.module)
-    // if the current module exists, call the destructor
-    if (this.$$currentModule) this.$$currentModule.destroy()
-    // module initialization
-    this.$$modules[moduleData.module].init(moduleData.path, moduleData.state)
-    // save the current module
-    this.$$currentModule = this.$$modules[moduleData.module]
+
+    if (
+      this.$$currentModule.name &&
+      this.$$currentModule.name === moduleData.module
+    ) {
+      this.$$currentModule.obj.dispatcher(moduleData.path, moduleData.state)
+    } else {
+      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
+      this.$$currentModule = {
+        name: moduleData.module,
+        obj: this.$$modules[moduleData.module]
+      }
+      this.$$currentModule.obj.init(moduleData.path, moduleData.state)
+    }
+
     // save state to history api
     if (moduleData.pushState)
       window.history.pushState(

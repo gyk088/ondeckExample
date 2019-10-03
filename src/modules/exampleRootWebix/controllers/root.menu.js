@@ -19,7 +19,10 @@ export default class RootMenu extends Observable {
   eventHandler() {
     $$(this.id + "List").attachEvent("onAfterSelect", key => {
       $$(this.id).hide()
-      this.$emit("initModule", key)
+      this.$emit("initModule", {
+        url: `/${key}`,
+        state: undefined
+      })
     })
   }
 
