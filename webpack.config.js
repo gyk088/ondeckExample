@@ -1,8 +1,23 @@
-const path = require("path")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const WebpackMd5Hash = require("webpack-md5-hash")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const VueLoaderPlugin = require("vue-loader/lib/plugin")
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackMd5Hash = require("webpack-md5-hash");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const childProcess = require("child_process");
+const webpackConstants = require("./webpack.constants");
+const { API_PREFIX, GOOGLE_KEY, WSP_PREFIX } = webpackConstants;
+let { version } = require("./package.json");
+
+/* Для отображения версии приложения + коммита при запуске приложения */
+try {
+  version = `${version} rev. ${childProcess
+    .execSync("git rev-parse --short HEAD")
+    .toString()
+    .trim()}`;
+} catch (e) {
+  // Если не удалось узнать хэш текущей фиксации, игнорируем ошибку.
+}
 
 module.exports = {
   entry: { main: "./src/index.js" },
@@ -97,6 +112,12 @@ module.exports = {
     noInfo: true
   },
   plugins: [
+    new webpack.DefinePlugin({
+      API_PREFIX: JSON.stringify(API_PREFIX),
+      WSP_PREFIX: JSON.stringify(WSP_PREFIX),
+      GOOGLE_KEY: JSON.stringify(GOOGLE_KEY),
+      VERSION: JSON.stringify(version)
+    }),
     new MiniCssExtractPlugin({
       filename: "style.[hash].css"
     }),
@@ -109,4 +130,4 @@ module.exports = {
     new WebpackMd5Hash(),
     new VueLoaderPlugin()
   ]
-}
+};

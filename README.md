@@ -10,6 +10,8 @@
 
 ## Инструкция по использованию
 
+Для запуска приложения необходимо создать файл webpack.constants.js на основании webpack.constants.js.example
+
 Установка рабочего окружения:
 
     yarn install (npm install)
