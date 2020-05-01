@@ -12,8 +12,8 @@ import axios from "axios"
  * module use React
  */
 export default class ExampleReact extends Module {
-  init(path, state) {
-    console.log(path, state)
+  init (module, state) {
+    console.log(module, state)
 
     this.reactApp = ReactDOM.render(
       <App />,
@@ -31,11 +31,11 @@ export default class ExampleReact extends Module {
     this.eventHandler()
   }
 
-  eventHandler() {
+  eventHandler () {
     this.reactApp.$on("onSumm", summ => this.$$publish("examplEvent", summ))
   }
 
-  destroy() {
+  destroy () {
     ReactDOM.unmountComponentAtNode(document.getElementById("MainContent"))
   }
 }

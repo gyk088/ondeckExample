@@ -9,7 +9,7 @@ import * as webix from "webix"
  * module use Webix
  */
 export default class ExampleWebix extends Module {
-  init(path, state) {
+  init (path, state) {
     console.log(path, state)
 
     this.Table = new Table()
@@ -19,25 +19,25 @@ export default class ExampleWebix extends Module {
     this.dispatcher(path, state)
   }
 
-  destroy() {
+  destroy () {
     this.Table.destroy()
   }
 
-  eventHandler() {
+  eventHandler () {
     // Открыть меню
     this.Table.$on("onClickRow", row => {
       console.log(row)
     })
   }
 
-  dispatcher(path, state) {
-    console.log(path)
-    if (!path) return
-    if (path.split("/")[2] === "item")
-      return this.showItem(state, path.split("/")[3])
+  dispatcher (module, state) {
+    console.log(module)
+    if (!module) return
+    if (module[1] === "item")
+      return this.showItem(state, module[2])
   }
 
-  showItem(state, id) {
+  showItem (state, id) {
     let text = ""
     if (state) {
       Object.keys(state).forEach(key => {

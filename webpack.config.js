@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const childProcess = require("child_process");
 const webpackConstants = require("./webpack.constants");
-const { API_PREFIX, GOOGLE_KEY, WSP_PREFIX } = webpackConstants;
+const { API_PREFIX, GOOGLE_KEY, WSP_PREFIX, ROOT_PATH } = webpackConstants;
 let { version } = require("./package.json");
 
 /* Для отображения версии приложения + коммита при запуске приложения */
@@ -105,18 +105,13 @@ module.exports = {
       ExampleAuth: path.resolve(__dirname, "src/modules/exampleAuth/")
     }
   },
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    port: 9001,
-    historyApiFallback: true,
-    noInfo: true
-  },
   plugins: [
     new webpack.DefinePlugin({
       API_PREFIX: JSON.stringify(API_PREFIX),
       WSP_PREFIX: JSON.stringify(WSP_PREFIX),
       GOOGLE_KEY: JSON.stringify(GOOGLE_KEY),
-      VERSION: JSON.stringify(version)
+      VERSION: JSON.stringify(version),
+      ROOT_PATH: JSON.stringify(ROOT_PATH),
     }),
     new MiniCssExtractPlugin({
       filename: "style.[hash].css"

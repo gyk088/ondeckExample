@@ -4,7 +4,7 @@
  * @param  {boolean} req - deep copy
  * @return {Object}      - сopy object
  */
-export function clone(obj, req) {
+export function clone (obj, req) {
   var newObj = isArray(obj) ? [] : {}
   for (var i in obj) {
     if (req && typeof obj[i] === "object" && i !== "prototype") {
@@ -16,19 +16,19 @@ export function clone(obj, req) {
   return newObj
 }
 
-export function isFunction(obj) {
+export function isFunction (obj) {
   return Object.prototype.toString.call(obj) === "[object Function]"
 }
 
-export function isArray(obj) {
+export function isArray (obj) {
   return Object.prototype.toString.call(obj) === "[object Array]"
 }
 
-export function isObject(obj) {
+export function isObject (obj) {
   return Object.prototype.toString.call(obj) === "[object Object]"
 }
 
-export function isEmpty(obj) {
+export function isEmpty (obj) {
   if (Object.prototype.toString.call(obj) !== "[object Object]") {
     return false
   }

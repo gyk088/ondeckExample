@@ -9,7 +9,9 @@ import ExampleAuth from "ExampleAuth/auth.main"
 QuasarConfif()
 
 export default {
-  apiUrl: "http://localhost:3000/api/",
+  apiUrl: API_PREFIX,
+  mainModule: 'main',
+  rootPath: ROOT_PATH, // корневой путь для приложения
   modules: {
     root: {
       name: "root",
