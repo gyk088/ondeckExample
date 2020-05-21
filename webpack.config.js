@@ -26,6 +26,12 @@ module.exports = {
     path: path.resolve(__dirname, "dist")
   },
   devtool: "source-map",
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    port: 9001,
+    historyApiFallback: true,
+    noInfo: true
+  },
   module: {
     rules: [
       {

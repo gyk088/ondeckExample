@@ -11,6 +11,7 @@ QuasarConfif()
 export default {
   apiUrl: API_PREFIX,
   mainModule: 'main',
+  historyApi: true,
   rootPath: ROOT_PATH, // корневой путь для приложения
   modules: {
     root: {

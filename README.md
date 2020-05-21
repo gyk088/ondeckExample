@@ -126,6 +126,7 @@ export default {
   apiUrl: "http://localhost:3000/api/",
   rootPath: "/test/path/",
   mainModule: 'main',
+  historyApi: false,
   modules: {
     root: {
       name: "root",
@@ -158,6 +159,7 @@ export default {
   }
 }
 ```
+`historyApi` - использовать в приложении history api,
 `rootPath` - путь к приложению, необязательный параметр. Если наше приложение стартует от пути `http://localhost:3000/test/path/` - в `rootPath` необходимо указать `/test/path/`.
 
 Объект `modules` содержит в себе объекты с настройками для каждого модуля. Ключем каждого объекта является название модуля, которе используется при роутинге. Например если мы находимся в модуле `vueApp` url будет соответствовать `http://localhost:9001/vueApp`
@@ -365,7 +367,9 @@ export default class ExampleAuth extends Module {
 
 ## Роутинг
 
-Роутинг основан на [html5 history api][rout]. Каждый модуль содержит метод `$$rout({path, state})`. Первым элементом урл адреса всегда явлется название модуля (ключ объекта modules в конфиге).
+Можно использовать [html5 history api][rout] - для этого в конфиге нужно указать `historyApi: true`.
+
+Каждый модуль содержит метод `$$rout({path, state})`. Первым элементом урл адреса всегда явлется название модуля (ключ объекта modules в конфиге).
 
 `this.$$rout({path, state})` - перейти на указанный урл `path` и передать данные `state`:
 

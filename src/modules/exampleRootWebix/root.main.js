@@ -12,14 +12,14 @@ import Cookies from "js-cookie"
 import "ExampleRootWebix/scss/main.scss"
 
 export default class Root extends RootModule {
-  init() {
+  init () {
     this.Content = new RootContent()
     this.Menu = new RootMenu(this.$$config)
 
     this.eventHandler()
   }
 
-  eventHandler() {
+  eventHandler () {
     webix.attachEvent("onAjaxError", this.ajaxError)
 
     axios.interceptors.response.use(undefined, error => {
@@ -43,7 +43,11 @@ export default class Root extends RootModule {
     })
   }
 
-  exampleAction(exampleData) {
+  moduleMounted () {
+    console.log(this.$$currentModule)
+  }
+
+  exampleAction (exampleData) {
     webix.confirm({
       title: "EXAMPLE EVENT",
       ok: "Yes",
@@ -56,7 +60,7 @@ export default class Root extends RootModule {
     })
   }
 
-  ajaxError(text) {
+  ajaxError (text) {
     webix.confirm({
       title: "SERVER ERROR",
       ok: "Yes",

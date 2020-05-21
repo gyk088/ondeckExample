@@ -1,4 +1,4 @@
-import { isEmpty, parseUrl } from "./helpers"
+import { isEmpty } from "./helpers"
 /**
  * this is the parent class for the main application module.
  * родительсикй класс для главного модуля приложения
@@ -23,24 +23,25 @@ export default class RootMediator {
     // объект с текущим модулем
     this.$$currentModule = {}
 
+    // состояние по указоннму url (если не используем history api)
+    this.$$urlState = {}
+
     // cоздаем все модули
     this.$$createModules()
     // вызываем глобаьное событие popstate
     this.$$eventHandler()
 
-    const module = this._getModuleFromUrl(document.location.pathname, this.$$config.rootPath)
+    const module = this._getModuleFromUrl(this.$$config.historyApi ? document.location.pathname : document.location.hash)
 
     this.init({
       module: module,
-      path: document.location.pathname,
-      state: history.state
+      path: document.location.pathname
     })
 
     // сurrent module initialization
     this.$$initModule({
       module: module,
-      path: document.location.pathname,
-      state: history.state
+      path: document.location.pathname
     })
   }
 
@@ -81,15 +82,15 @@ export default class RootMediator {
   * @param {String} url - url address
   */
   _getModuleFromUrl (url) {
-    let path = url || document.location.pathname
+    console.log()
     // Удалем ненужный нам путь
     if (this.$$config.rootPath) {
-      path = path.replace(this.$$config.rootPath, '')
+      url = url.replace(this.$$config.rootPath, '')
     }
-    // Удалем первый '/'
-    path = path.replace(/^\//, '')
+    // Удалем первый '/' и #
+    url = url.replace(/^[\/, #]/, '')
 
-    return path.split("/")
+    return url.split("/")
   }
 
   /**
@@ -116,13 +117,23 @@ export default class RootMediator {
    * глобальный обработчик событий
    */
   $$eventHandler () {
-    window.addEventListener("popstate", event =>
-      this.$$initModule({
-        module: document.location.pathname.split("/")[1],
-        path: document.location.pathname,
-        state: event.state
-      })
-    )
+    if (this.$$config.historyApi) {
+      window.addEventListener("popstate", event =>
+        this.$$initModule({
+          module: this._getModuleFromUrl(document.location.pathname),
+          path: document.location.pathname,
+          state: event.state
+        })
+      )
+    } else {
+      window.addEventListener("hashchange", event =>
+        this.$$initModule({
+          module: this._getModuleFromUrl(document.location.hash),
+          path: document.location.hash,
+          state: this.$$urlState[document.location.hash.replace(/^#/, '')]
+        })
+      )
+    }
   }
 
   /**
@@ -147,29 +158,36 @@ export default class RootMediator {
     if (!this.$$modules[moduleName])
       return console.error("no such module:", moduleName)
 
+    // Если переход внутри текущего модуля - вызываем диспатчер модуля
     if (
       this.$$currentModule.name &&
       this.$$currentModule.name === moduleName
     ) {
+      // Если переход внутри текущего модуля - вызываем диспатчер модуля (метода dispatcher)
       this.$$currentModule.obj.dispatcher(moduleData.module, moduleData.state)
     } else {
+      // Если переход на новый модуль - вызываем деструктор текущего модуля (метод destroy)
       this.$$currentModule.obj && this.$$currentModule.obj.destroy()
+      // Cохраняем новый модуль в объекте currentModule
       this.$$currentModule = {
         name: moduleName,
         obj: this.$$modules[moduleName]
       }
 
+      // Инициализируем новый модуль (вызываем метод init)
       this.$$currentModule.obj.init(moduleData.module, moduleData.state)
     }
 
-    // save state to history api
-    if (moduleData.pushState)
+    // Если используем history api - сохраняем новое состояние в истоии браузера
+    if (moduleData.pushState && this.$$config.historyApi) {
       window.history.pushState(
         moduleData.state,
         moduleName,
         moduleData.path,
       )
-
+    }
+    // Вызываем метод жизненого цикла
+    // в этом   методе у нас есть доступ к  this.$$currentModule
     this.moduleMounted()
   }
 
@@ -195,12 +213,21 @@ export default class RootMediator {
     let path = this.$$config.rootPath ? this.$$config.rootPath + routData.path : routData.path
     // Удалем двойные '//'
     path = path.replace(/\/\//, '/')
-    this.$$initModule({
-      module: this._getModuleFromUrl(path),
-      path: path,
-      state: routData.state,
-      pushState: true
-    })
+    if (this.$$config.historyApi) {
+      // Если используем history Api - вызываем инициализацию модуля
+      this.$$initModule({
+        module: this._getModuleFromUrl(path),
+        path: path,
+        state: routData.state,
+        pushState: true
+      })
+    } else {
+      // Если не используем - то сохраняем состояние, и переходим по нужному пути
+      // Далее вызовится событие "hashchange" - в котором и произойдет вызов метода initModule
+      this.$$urlState[path] = routData.state
+      document.location.hash = path
+    }
+
   }
 
   /**

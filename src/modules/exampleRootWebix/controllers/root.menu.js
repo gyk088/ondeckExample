@@ -16,17 +16,17 @@ export default class RootMenu extends Observable {
     this.createMenu()
   }
 
-  eventHandler() {
+  eventHandler () {
     $$(this.id + "List").attachEvent("onAfterSelect", key => {
       $$(this.id).hide()
       this.$emit("initModule", {
         url: `/${key}`,
-        state: undefined
+        state: null
       })
     })
   }
 
-  createMenu() {
+  createMenu () {
     let menu = []
     Object.keys(this.config.modules).forEach(key => {
       let module = this.config.modules[key]
@@ -42,7 +42,7 @@ export default class RootMenu extends Observable {
     $$(this.id + "List").parse(menu)
   }
 
-  show() {
+  show () {
     if ($$(this.id).config.hidden) {
       $$(this.id).show()
     } else {
