@@ -33,7 +33,7 @@ export function isEmpty (obj) {
     return false
   }
   for (var i in obj) {
-    if (o.hasOwnProperty(i)) {
+    if (obj.hasOwnProperty(i)) {
       return false
     }
   }

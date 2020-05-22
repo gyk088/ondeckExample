@@ -3,19 +3,13 @@
  */
 import "webix/webix.css"
 import "webix/skins/mini.min.css"
-import RootContent from "ExampleRootWebix/controllers/root.content"
-import RootMenu from "ExampleRootWebix/controllers/root.menu"
 import * as webix from "webix"
 import RootModule from "OneDeckCore/root.module"
 import axios from "axios"
 import Cookies from "js-cookie"
-import "ExampleRootWebix/scss/main.scss"
 
 export default class Root extends RootModule {
   init () {
-    this.Content = new RootContent()
-    this.Menu = new RootMenu(this.$$config)
-
     this.eventHandler()
   }
 
@@ -26,17 +20,6 @@ export default class Root extends RootModule {
       this.ajaxError(error.response.data)
       return Promise.reject(error)
     })
-
-    this.Content.$on("openMenu", () => {
-      this.Menu.show()
-    })
-
-    this.Menu.$on("initModule", data =>
-      this.$$rout({
-        path: data.url,
-        state: data.state
-      })
-    )
 
     this.$$subscribe(this.$$modules.reactApp, "examplEvent", exampleData => {
       this.exampleAction(exampleData)

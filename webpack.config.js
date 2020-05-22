@@ -100,15 +100,13 @@ module.exports = {
     alias: {
       Images: path.resolve(__dirname, "src/images/"),
       OneDeckCore: path.resolve(__dirname, "src/core/"),
-      ExampleRootWebix: path.resolve(
-        __dirname,
-        "src/modules/exampleRootWebix/"
-      ),
+      ExampleRoot: path.resolve(__dirname, "src/modules/exampleRoot/"),
       ExampleReact: path.resolve(__dirname, "src/modules/exampleReact/"),
       ExampleVue: path.resolve(__dirname, "src/modules/exampleVue/"),
       ExampleWebix: path.resolve(__dirname, "src/modules/exampleWebix/"),
-      ExampleRootVue: path.resolve(__dirname, "src/modules/exampleRootVue/"),
-      ExampleAuth: path.resolve(__dirname, "src/modules/exampleAuth/")
+      ExampleAuth: path.resolve(__dirname, "src/modules/exampleAuth/"),
+      ExampleLayoutVue: path.resolve(__dirname, "src/modules/exampleLayoutVue/"),
+      ExampleLayoutWebix: path.resolve(__dirname, "src/modules/exampleLayoutWebix/"),
     }
   },
   plugins: [

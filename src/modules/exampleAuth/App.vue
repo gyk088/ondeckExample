@@ -1,12 +1,14 @@
 <template>
-  <div class="auth">
-    <q-btn
-      size="22px"
-      class="q-px-xl q-py-xs"
-      color="purple"
-      label="АВТОРИЗАЦИЯ"
-      @click='auth'
-    />
+  <div id="ROOT">
+    <div class="auth">
+      <q-btn
+        size="22px"
+        class="q-px-xl q-py-xs"
+        color="purple"
+        label="АВТОРИЗАЦИЯ"
+        @click='auth'
+      />
+    </div>
   </div>
 </template>
 
@@ -15,11 +17,11 @@ import Cookies from "js-cookie"
 
 export default  {
   name: 'VueApp',
-  el: '#root',
+  el: '#ROOT',
   methods: {
     auth () {
       Cookies.set("token", "1234")
-      document.location.reload(true)
+      this.$emit('onAuth')
     }
   }
 }

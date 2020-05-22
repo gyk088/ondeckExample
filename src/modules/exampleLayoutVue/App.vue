@@ -1,4 +1,5 @@
 <template>
+<div id="ROOT">
   <q-layout view="hhh lpR fFf">
 
     <q-header elevated class="bg-primary text-white">
@@ -29,12 +30,13 @@
     </q-page-container>
 
   </q-layout>
+</div>
 </template>
 
 <script>
 export default {
   name: 'ExampleVueRoot',
-  el: '#root',
+  el: '#ROOT',
   data: {
     left: false,
     config: undefined

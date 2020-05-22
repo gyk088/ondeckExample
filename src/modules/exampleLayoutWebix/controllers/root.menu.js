@@ -3,7 +3,7 @@
  */
 import Observable from "OneDeckCore/observ"
 import * as webix from "webix"
-import RootMenuUI from "ExampleRootWebix/views/root.menu.ui"
+import RootMenuUI from "ExampleLayoutWebix/views/root.menu.ui"
 
 export default class RootMenu extends Observable {
   constructor(config) {

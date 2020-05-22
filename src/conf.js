@@ -2,45 +2,42 @@ import QuasarConfif from "./quasar.config"
 import WebixApp from "ExampleWebix/webix.main"
 import VueApp from "ExampleVue/vue.main"
 import ReactApp from "ExampleReact/react.main"
-import ExampleRootVue from "ExampleRootVue/root.main"
-import ExampleRootWebix from "ExampleRootWebix/root.main"
+import ExampleRoot from "ExampleRoot/root.main"
 import ExampleAuth from "ExampleAuth/auth.main"
+import ExampleLayoutVue from "ExampleLayoutVue/vue.layout"
+import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
 
 QuasarConfif()
 
 export default {
-  apiUrl: API_PREFIX,
-  mainModule: 'main',
   historyApi: true,
+  apiUrl: API_PREFIX,
   rootPath: ROOT_PATH, // корневой путь для приложения
+  rootModule: ExampleRoot,
+  mainModule: 'main',
   modules: {
-    root: {
-      name: "root",
-      hidden: true,
-      class: window.innerWidth < 1300 ? ExampleRootVue : ExampleRootWebix
-    },
     auth: {
+      module: ExampleAuth,
       name: "auth",
-      hidden: true,
-      class: ExampleAuth
+      icon: "fa-camera",
     },
     main: {
+      layout: ExampleLayoutWebix,
+      module: WebixApp,
       name: "webixApp",
-      hidden: false,
       icon: "fa-camera",
-      class: WebixApp
     },
     vueApp: {
+      layout: ExampleLayoutWebix,
+      module: VueApp,
       name: "vueApp",
-      hidden: false,
       icon: "mdi-watch-import-variant",
-      class: VueApp
     },
     reactApp: {
+      layout: ExampleLayoutVue,
+      module: ReactApp,
       name: "reactApp",
-      hidden: false,
       icon: "fa-address-book",
-      class: ReactApp
     }
   }
 }

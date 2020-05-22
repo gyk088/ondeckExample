@@ -7,7 +7,7 @@ export default class TableUI {
     return this.ui()
   }
 
-  columns() {
+  columns () {
     return [
       { id: "id", header: "ID", css: { "text-align": "right" }, width: 50 },
       {
@@ -22,7 +22,7 @@ export default class TableUI {
     ]
   }
 
-  ui() {
+  ui () {
     return {
       id: this.id,
       container: "MainContent",

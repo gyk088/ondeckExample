@@ -16,18 +16,28 @@ export default class RootMediator {
     // this object contains all modules
     // объек содержит все модули приложения
     this.$$modules = {}
+    // this object contains all layouts
+    // объек содержит все макеты приложения
+    this.$$layouts = {}
     // this object contains all mediator events
     // объект содержит все события медитора
     this.$$сhannels = {}
     // this object contains current module
     // объект с текущим модулем
     this.$$currentModule = {}
+    // this object contains current layout
+    // объект с текущим макетом
+    this.$$currentLayout = {}
 
     // состояние по указоннму url (если не используем history api)
     this.$$urlState = {}
 
+    // cоздаем все макеты
+    this.$$createLayout()
+
     // cоздаем все модули
     this.$$createModules()
+
     // вызываем глобаьное событие popstate
     this.$$eventHandler()
 
@@ -76,13 +86,26 @@ export default class RootMediator {
   moduleMounted () { }
 
   /**
+  * Called immediately after mounting
+  * child module to the root module
+  * The method must be overridden in the Root module.
+  *
+  * метод жиненого цикла , вызывается после того как модуль смотнирован,
+  * в этом методе доступен объект currentModule
+  */
+  _mounted () {
+    this.moduleMounted()
+    this.$$currentLayout && this.$$currentLayout.obj && this.$$currentLayout.obj.mounted(this.$$currentModule, this.$$currentLayout)
+    this.$$currentModule && this.$$currentModule.obj && this.$$currentModule.obj.mounted(this.$$currentModule, this.$$currentLayout)
+  }
+
+  /**
   * Get module names and data from url
   *
   * получаем название модуля и данные модуля url адреса,
   * @param {String} url - url address
   */
   _getModuleFromUrl (url) {
-    console.log()
     // Удалем ненужный нам путь
     if (this.$$config.rootPath) {
       url = url.replace(this.$$config.rootPath, '')
@@ -101,13 +124,39 @@ export default class RootMediator {
     if (!isEmpty(this.$$modules)) return
 
     Object.keys(this.$$config.modules).forEach(key => {
-      if (!this.$$config.modules[key].hidden) {
-        // создаем модуль
-        this.$$modules[key] = new this.$$config.modules[key].class()
+      // создаем модуль
+      this.$$modules[key] = new this.$$config.modules[key].module()
+      // добавляем метод rout для маршрутизации
+      this.$$modules[key].$$rout = this.$$rout.bind(this)
+      // добавляем метод  publish для публикации глобальных событий
+      this.$$modules[key].$$publish = this.$$publish.bind(this)
+      // конфиг
+      this.$$modules[key].$$config = this.$$config
+      if (this.$$config.modules[key].layout) {
+        // макет модуля
+        this.$$modules[key].$$layoutName = this.$$config.modules[key].layout.name
+      }
+    })
+  }
+
+  /**
+  * this method creates all layouts object
+  * создаем все макеты из конфига
+  */
+  $$createLayout () {
+    if (!isEmpty(this.$$layouts)) return
+
+    Object.keys(this.$$config.modules).forEach(key => {
+      if (this.$$config.modules[key].layout) {
+        const name = this.$$config.modules[key].layout.name
+        // создаем мает
+        this.$$layouts[name] = new this.$$config.modules[key].layout()
         // добавляем метод rout для маршрутизации
-        this.$$modules[key].$$rout = this.$$rout.bind(this)
+        this.$$layouts[name].$$rout = this.$$rout.bind(this)
         // добавляем метод  publish для публикации глобальных событий
-        this.$$modules[key].$$publish = this.$$publish.bind(this)
+        this.$$layouts[name].$$publish = this.$$publish.bind(this)
+        // конфиг
+        this.$$layouts[name].$$config = this.$$config
       }
     })
   }
@@ -158,6 +207,33 @@ export default class RootMediator {
     if (!this.$$modules[moduleName])
       return console.error("no such module:", moduleName)
 
+    // Создаем макет если он есть
+    if (
+      this.$$modules[moduleName].$$layoutName &&
+      this.$$modules[moduleName].$$layoutName === this.$$currentLayout.name
+    ) {
+      // Если переход внутри текущего макета
+      this.$$currentLayout.obj.dispatcher(moduleData.module, moduleData.state)
+    } else if (this.$$modules[moduleName].$$layoutName) {
+      // Если переход на новый макет то чистим модуль а потом макет
+      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
+      this.$$currentLayout.obj && this.$$currentLayout.obj.destroy()
+      this.$$currentModule = {}
+      // Cохраняем новый модуль в объекте currentModule
+      this.$$currentLayout = {
+        name: this.$$modules[moduleName].$$layoutName,
+        obj: this.$$layouts[this.$$modules[moduleName].$$layoutName]
+      }
+      // Инициализируем новый макет (вызываем метод init)
+      this.$$currentLayout.obj.init(moduleData.module, moduleData.state)
+    } else {
+      // Если у модуля нет макета - уничтожаем текущий макет
+      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
+      this.$$currentLayout.obj && this.$$currentLayout.obj.destroy()
+      this.$$currentModule = {}
+      this.$$currentLayout = {}
+    }
+
     // Если переход внутри текущего модуля - вызываем диспатчер модуля
     if (
       this.$$currentModule.name &&
@@ -188,7 +264,7 @@ export default class RootMediator {
     }
     // Вызываем метод жизненого цикла
     // в этом   методе у нас есть доступ к  this.$$currentModule
-    this.moduleMounted()
+    this._mounted()
   }
 
   /**

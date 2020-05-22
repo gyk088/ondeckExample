@@ -3,7 +3,7 @@
  */
 import Observable from "OneDeckCore/observ"
 import * as webix from "webix"
-import RootContentUI from "ExampleRootWebix/views/root.content.ui"
+import RootContentUI from "ExampleLayoutWebix/views/root.content.ui"
 
 export default class RootContent extends Observable {
   constructor() {
@@ -15,7 +15,7 @@ export default class RootContent extends Observable {
     this.eventHandler()
   }
 
-  eventHandler() {
+  eventHandler () {
     $$(this.id + "MenuOpenBtn").attachEvent("onItemClick", (id, e) => {
       this.$emit("openMenu")
     })

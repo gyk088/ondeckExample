@@ -7,13 +7,13 @@ export default class RootContentUI {
     return this.ui()
   }
 
-  content() {
+  content () {
     return {
       template: '<div id="MainContent"></div>'
     }
   }
 
-  toolBar() {
+  toolBar () {
     return {
       view: "toolbar",
       id: this.id + "Toolbar",
@@ -27,9 +27,9 @@ export default class RootContentUI {
     }
   }
 
-  ui() {
+  ui () {
     return {
-      container: "root",
+      container: "ROOT",
       id: this.id,
       rows: [this.toolBar(), this.content()]
     }
