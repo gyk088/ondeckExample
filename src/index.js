@@ -2,6 +2,6 @@ import "Images";
 import Config from "./conf";
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.info("version: ", VERSION);
-  new Config.rootModule(Config);
+  console.info("version: ", Config.version)
+  new Config.rootModule(Config)
 });

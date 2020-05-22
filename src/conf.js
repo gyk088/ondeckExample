@@ -10,8 +10,9 @@ import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
 QuasarConfif()
 
 export default {
-  historyApi: true,
+  historyApi: false,
   apiUrl: API_PREFIX,
+  version: VERSION,
   rootPath: ROOT_PATH, // корневой путь для приложения
   rootModule: ExampleRoot,
   mainModule: 'main',
@@ -22,8 +23,8 @@ export default {
       icon: "fa-camera",
     },
     main: {
-      layout: ExampleLayoutWebix,
-      module: WebixApp,
+      layout: ExampleLayoutVue,
+      module: window.innerWidth < 1300 ? VueApp : WebixApp,
       name: "webixApp",
       icon: "fa-camera",
     },
@@ -34,7 +35,7 @@ export default {
       icon: "mdi-watch-import-variant",
     },
     reactApp: {
-      layout: ExampleLayoutVue,
+      layout: ExampleLayoutWebix,
       module: ReactApp,
       name: "reactApp",
       icon: "fa-address-book",

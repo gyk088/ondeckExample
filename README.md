@@ -91,16 +91,10 @@
 ```
 import "Images"
 import Config from "./conf"
-import Cookies from "js-cookie"
 
 document.addEventListener("DOMContentLoaded", () => {
-  let token = Cookies.get("token")
-
-  if (token) {
-    new Config.modules["root"].class(Config)
-  } else {
-    new Config.modules["auth"].class(Config)
-  }
+  console.info("version: ", Config.version)
+  new Config.rootModule(Config)
 })
 ```
 
@@ -116,75 +110,77 @@ import QuasarConfif from "./quasar.config"
 import WebixApp from "ExampleWebix/webix.main"
 import VueApp from "ExampleVue/vue.main"
 import ReactApp from "ExampleReact/react.main"
-import ExampleRootVue from "ExampleRootVue/root.main"
-import ExampleRootWebix from "ExampleRootWebix/root.main"
+import ExampleRoot from "ExampleRoot/root.main"
 import ExampleAuth from "ExampleAuth/auth.main"
+import ExampleLayoutVue from "ExampleLayoutVue/vue.layout"
+import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
 
 QuasarConfif()
 
 export default {
-  apiUrl: "http://localhost:3000/api/",
-  rootPath: "/test/path/",
-  mainModule: 'main',
   historyApi: false,
+  apiUrl: API_PREFIX,
+  version: VERSION,
+  rootPath: ROOT_PATH, // корневой путь для приложения
+  rootModule: ExampleRoot,
+  mainModule: 'main',
   modules: {
-    root: {
-      name: "root",
-      hidden: true,
-      class: window.innerWidth < 1300 ? ExampleRootVue : ExampleRootWebix
-    },
     auth: {
+      module: ExampleAuth,
       name: "auth",
-      hidden: true,
-      class: ExampleAuth
+      icon: "fa-camera",
     },
     main: {
+      layout: ExampleLayoutVue,
+      module: window.innerWidth < 1300 ? VueApp : WebixApp,
       name: "webixApp",
-      hidden: false,
       icon: "fa-camera",
-      class: WebixApp
     },
     vueApp: {
+      layout: ExampleLayoutWebix,
+      module: VueApp,
       name: "vueApp",
-      hidden: false,
       icon: "mdi-watch-import-variant",
-      class: VueApp
     },
     reactApp: {
+      layout: ExampleLayoutWebix,
+      module: ReactApp,
       name: "reactApp",
-      hidden: false,
       icon: "fa-address-book",
-      class: ReactApp
     }
   }
 }
+
 ```
-`historyApi` - использовать в приложении history api,
-`rootPath` - путь к приложению, необязательный параметр. Если наше приложение стартует от пути `http://localhost:3000/test/path/` - в `rootPath` необходимо указать `/test/path/`.
+`rootModule: RootMediator`: (обязательный параметр) модуль контейнер, содержит в себе все модули приложения, потомок класса `RootMediator`;
+
+`mainModule: String`: (обязательный параметр) главный модуль, (главный экран);
+
+`historyApi: Bool`: (необязательный параметр) true - использовать в приложении history api;
+
+`apiUrl: String`: (необязательный параметр) урл для обращения к API;
+
+`version: String`: (необязательный параметр) версия приложения `version:  2.0.1 rev. 407d63e`;
+
+`rootPath: String`: (необязательный параметр) путь к приложению, необязательный параметр. Если наше приложение стартует от пути `http://localhost:3000/test/path/` - в `rootPath` необходимо указать `/test/path/`;
 
 Объект `modules` содержит в себе объекты с настройками для каждого модуля. Ключем каждого объекта является название модуля, которе используется при роутинге. Например если мы находимся в модуле `vueApp` url будет соответствовать `http://localhost:9001/vueApp`
 
-Объект `modules` долже содеражть следущие обязательные модули:
+Объект `modules` содержит  модули:
 
-`root` - модуль контейнер, содержит в себе все модули приложения;
+`module: Module` - (обязательный параметр) объект моудля;
 
-`main` - модуль для главной страницы;
+`layout: Module` - (необязательный параметр) объект макета (layout) в который монтируется модуль;
 
-`auth` - модуль авторизации, в случае если она нам необходима;
+`name: String` - (необязательный параметр) название для меню;
 
-**Параметры модуля:**
+`icon: String` - (необязательный параметр) иконка для меню;
 
-`hidden` (обязательный параметр) - это параметр указывает на то, что этот модуль должен быть скрыт от модуля root. Например модуль root не может сам себя инициализировать, или модуль авторизации (у него отдельная логика работы);
+В зависимости от различных параметров `module: window.innerWidth < 1300 ? VueApp : WebixApp` мы можем использовать различные реализации модулей.
 
-`class` (обязательный параметр) - это параметр содержит в себе класс модуля;
+Так-же конфиг может иметь любые параметры, необоходимые для реализации приложения.
 
-`name` (необязательный параметр) - в данном примере мы используем этот параметр для названия модуля в меню приложения. При клике на пункт меню мы попадаем в модуль который выбрали;
-
-`icon` (необязательный параметр) - это парамет содержит в себе название иконки для вывода в меню;
-
-Обект модуля может содержать в себе любые необходимые нам настройки данного модуля.
-
-В зависимости от различных параметров `class: window.innerWidth < 1300 ? ExampleRootVue : ExampleRootWebix` мы можем использовать различные реализации модулей.
+Объект конфига доступен во всех моудлях `this.$$config`
 
 ### Пример модуля
 

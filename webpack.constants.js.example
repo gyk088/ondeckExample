@@ -10,4 +10,6 @@ module.exports = {
   GOOGLE_KEY: "#################################"
   // Путь от которого стартует приложение history api
   ROOT_PATH: '/example/path/',
+  // Порт для dev сервера
+  DEV_PORT: 9001,
 }
