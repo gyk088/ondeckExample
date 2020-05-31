@@ -16,8 +16,7 @@ export default class RootContent extends Observable {
   }
 
   eventHandler () {
-    $$(this.id + "MenuOpenBtn").attachEvent("onItemClick", (id, e) => {
-      this.$emit("openMenu")
-    })
+    $$(this.id + "MenuOpenBtn").attachEvent("onItemClick", () => this.$emit("openMenu"))
+    $$(this.id + "GlobalWndBtn").attachEvent("onItemClick", () => this.$emit("onShowGlobalWnd"))
   }
 }

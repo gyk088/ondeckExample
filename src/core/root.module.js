@@ -19,9 +19,6 @@ export default class RootMediator {
     // this object contains all layouts
     // объек содержит все макеты приложения
     this.$$layouts = {}
-    // this object contains all mediator events
-    // объект содержит все события медитора
-    this.$$сhannels = {}
     // this object contains current module
     // объект с текущим модулем
     this.$$currentModule = {}
@@ -29,17 +26,21 @@ export default class RootMediator {
     // объект с текущим макетом
     this.$$currentLayout = {}
 
+    // this object contains all mediator events
+    // объект содержит все события медитора
+    this._сhannels = {}
+
     // состояние по указоннму url (если не используем history api)
-    this.$$urlState = {}
+    this._urlState = {}
 
     // cоздаем все макеты
-    this.$$createLayout()
+    this._createLayout()
 
     // cоздаем все модули
-    this.$$createModules()
+    this._createModules()
 
     // вызываем глобаьное событие popstate
-    this.$$eventHandler()
+    this._eventHandler()
 
     const module = this._getModuleFromUrl(this.$$config.historyApi ? document.location.pathname : document.location.hash)
 
@@ -49,7 +50,7 @@ export default class RootMediator {
     })
 
     // сurrent module initialization
-    this.$$initModule({
+    this._initModule({
       module: module,
       path: document.location.pathname
     })
@@ -86,6 +87,53 @@ export default class RootMediator {
   moduleMounted () { }
 
   /**
+   * publish event
+   * @param {string} channel - event name.
+   */
+  $$publish (channel) {
+    if (!this._сhannels[channel]) return false
+    let args = Array.prototype.slice.call(arguments, 1)
+    this._сhannels[channel].forEach(cb => cb(args))
+  }
+
+  /**
+   * @param {Object} routData - object contains url and state.
+   * @param {string} routData.path  - url, first element module name.
+   * @param {Object} routData.state - state passed from the module.
+   */
+  $$rout (routData) {
+    let path = this.$$config.rootPath ? this.$$config.rootPath + routData.path : routData.path
+    // Удалем двойные '//'
+    path = path.replace(/\/\//, '/')
+    if (this.$$config.historyApi) {
+      // Если используем history Api - вызываем инициализацию модуля
+      this._initModule({
+        module: this._getModuleFromUrl(path),
+        path: path,
+        state: routData.state,
+        pushState: true
+      })
+    } else {
+      // Если не используем - то сохраняем состояние, и переходим по нужному пути
+      // Далее вызовится событие "hashchange" - в котором и произойдет вызов метода initModule
+      this._urlState[path] = routData.state
+      document.location.hash = path
+    }
+
+  }
+
+  /**
+   * subscribe to an event
+   * @param {Object} module - module object.
+   * @param {string} channel - event name.
+   * @param {function} cb - callback function.
+   */
+  $$subscribe (channel, cb) {
+    if (!this._сhannels[channel]) this._сhannels[channel] = []
+    this._сhannels[channel].push(cb)
+  }
+
+  /**
   * Called immediately after mounting
   * child module to the root module
   * The method must be overridden in the Root module.
@@ -95,13 +143,61 @@ export default class RootMediator {
   */
   _mounted () {
     this.moduleMounted()
-    this.$$currentLayout && this.$$currentLayout.obj && this.$$currentLayout.obj.mounted(this.$$currentModule, this.$$currentLayout)
-    this.$$currentModule && this.$$currentModule.obj && this.$$currentModule.obj.mounted(this.$$currentModule, this.$$currentLayout)
+    this.$$currentLayout.obj && this.$$currentLayout.obj.mounted(this.$$currentModule, this.$$currentLayout)
+    if (this.$$currentModule.obj) {
+      this.$$currentModule.obj.mounted(this.$$currentModule, this.$$currentLayout)
+      Object
+        .keys(this.$$currentModule.obj.$$embed)
+        .forEach(name => this.$$currentModule.obj.$$embed[name].mounted(this.$$currentModule, this.$$currentLayout))
+    }
+  }
+
+  /**
+  * сurrent module destroy
+  * уничтожение текущего модуля
+  */
+  _destroyModule () {
+    // Если переход на новый макет то чистим модуль а потом макет
+    console.log("destroy", this.$$currentModule)
+    if (this.$$currentModule.obj) {
+      console.log("destroy", this.$$currentModule.name)
+      this.$$currentModule.obj.destroy()
+      Object
+        .keys(this.$$currentModule.obj.$$embed)
+        .forEach(name => this.$$currentModule.obj.$$embed[name].destroy())
+      this.$$currentModule = {}
+    }
+  }
+
+  /**
+  * сurrent Layout destroy
+  * уничтожение текущего макета
+  */
+  _destroyLayout () {
+    if (this.$$currentLayout.obj) {
+      this.$$currentLayout.obj.destroy()
+      this.$$currentLayout = {}
+    }
+  }
+
+  /**
+  * сurrent module dispatcher
+  * вызываем диспатчер у текущего модуля
+  * @param {Array} module - url array
+  * @param {Object} state - current state
+  */
+  _dispatcherModule (module, state) {
+    // Если переход на новый макет то чистим модуль а потом макет
+    if (this.$$currentModule.obj) {
+      this.$$currentModule.obj.dispatcher(module, state)
+      Object
+        .keys(this.$$currentModule.obj.$$embed)
+        .forEach(name => this.$$currentModule.obj.$$embed[name].dispatcher(module, state))
+    }
   }
 
   /**
   * Get module names and data from url
-  *
   * получаем название модуля и данные модуля url адреса,
   * @param {String} url - url address
   */
@@ -120,7 +216,7 @@ export default class RootMediator {
    * this method creates all modules object
    * создаем все модули из конфига
    */
-  $$createModules () {
+  _createModules () {
     if (!isEmpty(this.$$modules)) return
 
     Object.keys(this.$$config.modules).forEach(key => {
@@ -132,6 +228,18 @@ export default class RootMediator {
       this.$$modules[key].$$publish = this.$$publish.bind(this)
       // конфиг
       this.$$modules[key].$$config = this.$$config
+      // встраиваемые модули
+      this.$$modules[key].$$embed = {}
+
+      if (this.$$config.modules[key].embed) {
+        this.$$modules[key].$$embed
+        Object.keys(this.$$config.modules[key].embed).forEach(embedName => {
+          this.$$modules[key].$$embed[embedName] = new this.$$config.modules[key].embed[embedName].module()
+          this.$$modules[key].$$embed[embedName].$$rout = this.$$rout.bind(this)
+          this.$$modules[key].$$embed[embedName].$$publish = this.$$publish.bind(this)
+          this.$$modules[key].$$embed[embedName].$$publish.$$config = this.$$config
+        })
+      }
       if (this.$$config.modules[key].layout) {
         // макет модуля
         this.$$modules[key].$$layoutName = this.$$config.modules[key].layout.name
@@ -143,7 +251,7 @@ export default class RootMediator {
   * this method creates all layouts object
   * создаем все макеты из конфига
   */
-  $$createLayout () {
+  _createLayout () {
     if (!isEmpty(this.$$layouts)) return
 
     Object.keys(this.$$config.modules).forEach(key => {
@@ -165,10 +273,10 @@ export default class RootMediator {
    * this method creates a global event popstate
    * глобальный обработчик событий
    */
-  $$eventHandler () {
+  _eventHandler () {
     if (this.$$config.historyApi) {
       window.addEventListener("popstate", event =>
-        this.$$initModule({
+        this._initModule({
           module: this._getModuleFromUrl(document.location.pathname),
           path: document.location.pathname,
           state: event.state
@@ -176,10 +284,10 @@ export default class RootMediator {
       )
     } else {
       window.addEventListener("hashchange", event =>
-        this.$$initModule({
+        this._initModule({
           module: this._getModuleFromUrl(document.location.hash),
           path: document.location.hash,
-          state: this.$$urlState[document.location.hash.replace(/^#/, '')]
+          state: this._urlState[document.location.hash.replace(/^#/, '')]
         })
       )
     }
@@ -194,7 +302,7 @@ export default class RootMediator {
    * @param {Object} moduleData.state - current state.
    * @param {boolean} moduleData.pushState - flag indicates save to history api.
    */
-  $$initModule (moduleData) {
+  _initModule (moduleData) {
     let moduleName = moduleData.module[0]
 
     if (!moduleName) {
@@ -204,8 +312,17 @@ export default class RootMediator {
       return;
     }
 
-    if (!this.$$modules[moduleName])
+    if (!this.$$modules[moduleName]) {
+      this.$$rout({
+        path: this.$$config.module404
+      })
       return console.error("no such module:", moduleName)
+    }
+
+    // Если это глобальный или встраиваемый модуль - они не учавствует в роутинге
+    if (this.$$modules[moduleName].global || this.$$modules[moduleName].embed) {
+      return console.error("embed or global module:", moduleName)
+    }
 
     // Создаем макет если он есть
     if (
@@ -216,9 +333,9 @@ export default class RootMediator {
       this.$$currentLayout.obj.dispatcher(moduleData.module, moduleData.state)
     } else if (this.$$modules[moduleName].$$layoutName) {
       // Если переход на новый макет то чистим модуль а потом макет
-      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
-      this.$$currentLayout.obj && this.$$currentLayout.obj.destroy()
-      this.$$currentModule = {}
+      this._destroyModule()
+      this._destroyLayout()
+
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentLayout = {
         name: this.$$modules[moduleName].$$layoutName,
@@ -228,10 +345,8 @@ export default class RootMediator {
       this.$$currentLayout.obj.init(moduleData.module, moduleData.state)
     } else {
       // Если у модуля нет макета - уничтожаем текущий макет
-      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
-      this.$$currentLayout.obj && this.$$currentLayout.obj.destroy()
-      this.$$currentModule = {}
-      this.$$currentLayout = {}
+      this._destroyModule()
+      this._destroyLayout()
     }
 
     // Если переход внутри текущего модуля - вызываем диспатчер модуля
@@ -240,18 +355,22 @@ export default class RootMediator {
       this.$$currentModule.name === moduleName
     ) {
       // Если переход внутри текущего модуля - вызываем диспатчер модуля (метода dispatcher)
-      this.$$currentModule.obj.dispatcher(moduleData.module, moduleData.state)
+      this._dispatcherModule(moduleData.module, moduleData.state)
     } else {
       // Если переход на новый модуль - вызываем деструктор текущего модуля (метод destroy)
-      this.$$currentModule.obj && this.$$currentModule.obj.destroy()
+      this._destroyModule()
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentModule = {
         name: moduleName,
-        obj: this.$$modules[moduleName]
+        obj: this.$$modules[moduleName],
       }
 
       // Инициализируем новый модуль (вызываем метод init)
       this.$$currentModule.obj.init(moduleData.module, moduleData.state)
+      // Инициализируем встроенные модули
+      Object.keys(this.$$currentModule.obj.$$embed).forEach(name => this.$$currentModule.obj.$$embed[name].init(moduleData.module, moduleData.state))
+
+      this._dispatcherModule(moduleData.module, moduleData.state)
     }
 
     // Если используем history api - сохраняем новое состояние в истоии браузера
@@ -267,53 +386,5 @@ export default class RootMediator {
     this._mounted()
   }
 
-  /**
-   * publish event
-   * @param {string} channel - event name.
-   */
-  $$publish (channel) {
-    if (!this.$$сhannels[channel]) return false
-    let args = Array.prototype.slice.call(arguments, 1)
 
-    this.$$сhannels[channel].forEach(subscription => {
-      subscription.callback.apply(subscription.context, args)
-    })
-  }
-
-  /**
-   * @param {Object} routData - object contains url and state.
-   * @param {string} routData.path  - url, first element module name.
-   * @param {Object} routData.state - state passed from the module.
-   */
-  $$rout (routData) {
-    let path = this.$$config.rootPath ? this.$$config.rootPath + routData.path : routData.path
-    // Удалем двойные '//'
-    path = path.replace(/\/\//, '/')
-    if (this.$$config.historyApi) {
-      // Если используем history Api - вызываем инициализацию модуля
-      this.$$initModule({
-        module: this._getModuleFromUrl(path),
-        path: path,
-        state: routData.state,
-        pushState: true
-      })
-    } else {
-      // Если не используем - то сохраняем состояние, и переходим по нужному пути
-      // Далее вызовится событие "hashchange" - в котором и произойдет вызов метода initModule
-      this.$$urlState[path] = routData.state
-      document.location.hash = path
-    }
-
-  }
-
-  /**
-   * subscribe to an event
-   * @param {Object} module - module object.
-   * @param {string} channel - event name.
-   * @param {function} cb - callback function.
-   */
-  $$subscribe (module, channel, cb) {
-    if (!this.$$сhannels[channel]) this.$$сhannels[channel] = []
-    this.$$сhannels[channel].push({ context: module, callback: cb })
-  }
 }

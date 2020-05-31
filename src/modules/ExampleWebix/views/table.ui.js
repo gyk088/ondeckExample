@@ -29,7 +29,8 @@ export default class TableUI {
       view: "treetable",
       select: "row",
       selected: true,
-      columns: this.columns()
+      columns: this.columns(),
+      height: 300,
     }
   }
 }

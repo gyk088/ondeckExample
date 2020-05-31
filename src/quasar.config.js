@@ -23,7 +23,9 @@ import {
   QTable,
   QTh,
   QTr,
-  QTd
+  QTd,
+  QSpace,
+  QParallax,
 } from "quasar"
 
 export default () =>
@@ -51,6 +53,8 @@ export default () =>
       QTable,
       QTh,
       QTr,
-      QTd
+      QTd,
+      QSpace,
+      QParallax,
     }
   })

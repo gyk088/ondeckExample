@@ -30,7 +30,7 @@ export default class RootMenu extends Observable {
     let menu = []
     Object.keys(this.config.modules).forEach(key => {
       let module = this.config.modules[key]
-      if (!module.hidden) {
+      if (!module.global) {
         menu.push({
           id: key,
           value: module.name,

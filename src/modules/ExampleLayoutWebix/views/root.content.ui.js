@@ -9,7 +9,7 @@ export default class RootContentUI {
 
   content () {
     return {
-      template: '<div id="MainContent"></div>'
+      template: '<div id="MainContent"></div><div id="Embed"></div>'
     }
   }
 
@@ -22,7 +22,7 @@ export default class RootContentUI {
         { view: "icon", icon: "mdi mdi-menu", id: this.id + "MenuOpenBtn" },
         { view: "label", label: "OneDeck", id: this.id + "ToolbarLabel" },
         {},
-        { view: "icon", icon: "mdi mdi-cogs", id: this.id + "MenuOpenConfig" }
+        { view: "icon", icon: "mdi mdi-cogs", id: this.id + "GlobalWndBtn" }
       ]
     }
   }

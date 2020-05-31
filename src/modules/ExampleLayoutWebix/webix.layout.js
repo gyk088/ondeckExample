@@ -28,7 +28,10 @@ export default class ExampleLayoutWebix extends Module {
         state: data.state
       })
     )
+
+    this.Content.$on("onShowGlobalWnd", () => this.$$publish("onShowGlobalWnd"))
   }
+
 
   mounted (module, layout) {
     console.log(module)

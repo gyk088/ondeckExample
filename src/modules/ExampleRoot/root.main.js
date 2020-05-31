@@ -21,8 +21,12 @@ export default class Root extends RootModule {
       return Promise.reject(error)
     })
 
-    this.$$subscribe(this.$$modules.reactApp, "examplEvent", exampleData => {
+    this.$$subscribe("examplEvent", exampleData => {
       this.exampleAction(exampleData)
+    })
+
+    this.$$subscribe("onShowGlobalWnd", () => {
+      this.$$modules.globalwnd.show()
     })
   }
 
