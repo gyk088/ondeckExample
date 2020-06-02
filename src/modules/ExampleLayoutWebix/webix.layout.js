@@ -29,7 +29,7 @@ export default class ExampleLayoutWebix extends Module {
       })
     )
 
-    this.Content.$on("onShowGlobalWnd", () => this.$$publish("onShowGlobalWnd"))
+    this.Content.$on("onShowGlobalWnd", () => this.$$publish("showGlobalWnd"))
   }
 
 

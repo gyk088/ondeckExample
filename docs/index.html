@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>ONEDECK</h1>
+<p>Это универсальная обертка для написания модульного веб приложения
+с использованием различных фреймоврков.
+В примере есть реализации модулей с использованием следующих фреймворков:</p>
+<ol>
+<li><a href="https://webix.com/">webix</a></li>
+<li><a href="https://vuejs.org/">vue</a> и <a href="https://quasar.dev/">quasar</a></li>
+<li><a href="https://reactjs.org/">react</a></li>
+</ol>
+<h2>Инструкция по использованию</h2>
+<p>Для запуска приложения необходимо создать файл webpack.constants.js на основании webpack.constants.js.example</p>
+<p>Установка рабочего окружения:</p>
+<pre><code>yarn install (npm install)
+</code></pre>
+<p>Запуск сервера для разработки:</p>
+<pre><code>yarn start (npm run start)
+</code></pre>
+<p>Собрать приложение:</p>
+<pre><code>yarn build (npm run build)
+</code></pre>
+<h2>Внутреннее устройство</h2>
+<pre class="prettyprint source"><code>|-- onedeck
+    |-- dist
+    |-- node_modules
+    |-- src
+    |   |-- core
+    |   |   |--helpers.js
+    |   |   |--module.js
+    |   |   |--observ.js
+    |   |   |--root.module.js
+    |   |-- images
+    |   |   |--index.js
+    |   |-- modules
+    |   |   |--exampleAuth
+    |   |   |--exampleReact
+    |   |   |--exampleRootVue
+    |   |   |--exampleRootWebix
+    |   |   |--exampleVue
+    |   |   |--exampleWebix
+    |   |-- config.js
+    |   |-- quasar.config.js
+    |   |-- index.html
+    |   |-- index.js
+    |-- .gitignore
+    |-- package.json
+    |-- postcss.config.js
+    |-- README.md
+    |-- webpack.config.js
+</code></pre>
+<ul>
+<li><strong>dist</strong> - папка для хранения скомпилированных файлов</li>
+<li><strong>src</strong> - весь код программы</li>
+<li><strong>src/core</strong> - базовые классы для модулей и helpers</li>
+<li><strong>src/images</strong> - файлы с расширением png|jpeg|jpg|svg</li>
+<li><strong>src/modules</strong> - модули приложения</li>
+<li><strong>src/modules/exampleAuth</strong> - пример модуля для авторизации (Vue)</li>
+<li><strong>src/modules/exampleReact</strong> - пример модуля на React</li>
+<li><strong>src/modules/exampleRootVue</strong> - пример root модуля на Vue</li>
+<li><strong>src/modules/exampleRootWebix</strong> - пример root модуля на Webix</li>
+<li><strong>src/modules/exampleVue</strong> - пример модуля на Vue</li>
+<li><strong>src/modules/exampleWebix</strong> - пример модуля на Webix</li>
+<li><strong>src/config.js</strong> - глобальный конфиг приложения</li>
+<li><strong>src/quasar.config.js</strong> - конфиг для Quasar</li>
+<li><strong>src/index.html</strong> - главный html шаблон</li>
+<li><strong>src/index.js</strong> - точка входа</li>
+</ul>
+<h2>Модули</h2>
+<p>Модуль (в контексте данной архитектуры) - это объект которы содержит в себе отдельное веб приложение. Отдельное веб приложение можно собрать вне проекта, при этом внести минимальные правки в код. Модули могут общаться друг с другом при помощи роутинга (метод $$rout), или при помощи пользовательских событий (метод $$publish)</p>
+<h3>Главный модуль Root</h3>
+<p>Модуль Root - это главный модуль всего приложения, он должен быть наследником класса RootMediator (core/root.module.js). Этот класс реализует паттерн <a href="https://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)">Посредник</a>. Он определяет интерфейс для обмена информацией между модулями.</p>
+<h3>Модуль</h3>
+<p>Модуль приложения является оберткой для отдельного веб приложения. Должен быть наследником обстрактного класса Module (core/module.js).</p>
+<h2>Пример реализации веб приложения с использованием модульной архитектуры</h2>
+<h3>Точка входа src/index.js</h3>
+<pre class="prettyprint source"><code>import &quot;Images&quot;
+import Config from &quot;./conf&quot;
+
+document.addEventListener(&quot;DOMContentLoaded&quot;, () => {
+  console.info(&quot;version: &quot;, Config.version)
+  new Config.rootModule(Config)
+})
+</code></pre>
+<p>В этом примере реализована простейшая авторизация.</p>
+<h3>Config src/conf.js</h3>
+<p>Config - это файл с настройками нашего приложения. Он подключает все модули приложения, и дополнительные настройки по необходимости.
+В примере мы вызываем настройки для <a href="https://quasar.dev/">Quasar</a> с помощью функции <code>QuasarConfif()</code>.</p>
+<pre class="prettyprint source"><code>import QuasarConfif from &quot;./quasar.config&quot;
+import WebixApp from &quot;ExampleWebix/webix.main&quot;
+import VueApp from &quot;ExampleVue/vue.main&quot;
+import ReactApp from &quot;ExampleReact/react.main&quot;
+import ExampleRoot from &quot;ExampleRoot/root.main&quot;
+import ExampleAuth from &quot;ExampleAuth/auth.main&quot;
+import ExampleLayoutVue from &quot;ExampleLayoutVue/vue.layout&quot;
+import ExampleLayoutWebix from &quot;ExampleLayoutWebix/webix.layout&quot;
+
+QuasarConfif()
+
+export default {
+  historyApi: false,
+  apiUrl: API_PREFIX,
+  version: VERSION,
+  rootPath: ROOT_PATH, // корневой путь для приложения
+  rootModule: ExampleRoot,
+  mainModule: 'main',
+  modules: {
+    auth: {
+      module: ExampleAuth,
+      name: &quot;auth&quot;,
+      icon: &quot;fa-camera&quot;,
+    },
+    main: {
+      layout: ExampleLayoutVue,
+      module: window.innerWidth &lt; 1300 ? VueApp : WebixApp,
+      name: &quot;webixApp&quot;,
+      icon: &quot;fa-camera&quot;,
+    },
+    vueApp: {
+      layout: ExampleLayoutWebix,
+      module: VueApp,
+      name: &quot;vueApp&quot;,
+      icon: &quot;mdi-watch-import-variant&quot;,
+    },
+    reactApp: {
+      layout: ExampleLayoutWebix,
+      module: ReactApp,
+      name: &quot;reactApp&quot;,
+      icon: &quot;fa-address-book&quot;,
+    }
+  }
+}
+
+</code></pre>
+<p><code>rootModule: RootMediator</code>: (обязательный параметр) модуль контейнер, содержит в себе все модули приложения, потомок класса <code>RootMediator</code>;</p>
+<p><code>mainModule: String</code>: (обязательный параметр) главный модуль, (главный экран);</p>
+<p><code>historyApi: Bool</code>: (необязательный параметр) true - использовать в приложении history api;</p>
+<p><code>apiUrl: String</code>: (необязательный параметр) урл для обращения к API;</p>
+<p><code>version: String</code>: (необязательный параметр) версия приложения <code>version:  2.0.1 rev. 407d63e</code>;</p>
+<p><code>rootPath: String</code>: (необязательный параметр) путь к приложению, необязательный параметр. Если наше приложение стартует от пути <code>http://localhost:3000/test/path/</code> - в <code>rootPath</code> необходимо указать <code>/test/path/</code>;</p>
+<p>Объект <code>modules</code> содержит в себе объекты с настройками для каждого модуля. Ключем каждого объекта является название модуля, которе используется при роутинге. Например если мы находимся в модуле <code>vueApp</code> url будет соответствовать <code>http://localhost:9001/vueApp</code></p>
+<p>Объект <code>modules</code> содержит  модули:</p>
+<p><code>module: Module</code> - (обязательный параметр) объект моудля;</p>
+<p><code>layout: Module</code> - (необязательный параметр) объект макета (layout) в который монтируется модуль;</p>
+<p><code>name: String</code> - (необязательный параметр) название для меню;</p>
+<p><code>icon: String</code> - (необязательный параметр) иконка для меню;</p>
+<p>В зависимости от различных параметров <code>module: window.innerWidth &lt; 1300 ? VueApp : WebixApp</code> мы можем использовать различные реализации модулей.</p>
+<p>Так-же конфиг может иметь любые параметры, необоходимые для реализации приложения.</p>
+<p>Объект конфига доступен во всех моудлях <code>this.$$config</code></p>
+<h3>Пример модуля</h3>
+<pre class="prettyprint source"><code>import React from &quot;react&quot;
+import ReactDOM from &quot;react-dom&quot;
+import App from &quot;ExampleReact/component/App&quot;
+import &quot;ExampleReact/index.css&quot;
+import &quot;github-fork-ribbon-css/gh-fork-ribbon.css&quot;
+import Module from &quot;OneDeckCore/module&quot;
+import Observable from &quot;OneDeckCore/observ&quot;
+import axios from &quot;axios&quot;
+
+/**
+ * Class ExampleReact
+ * module use React
+ */
+export default class ExampleReact extends Module {
+  init(path, state) {
+    console.log(path, state)
+
+    this.reactApp = ReactDOM.render(
+      &lt;App />,
+      document.getElementById(&quot;MainContent&quot;)
+    )
+
+    let observ = new Observable()
+    observ.install(this.reactApp)
+
+    this.eventHandler()
+  }
+
+  eventHandler() {
+    this.reactApp.$on(&quot;onSumm&quot;, summ => this.$$publish(&quot;examplEvent&quot;, summ))
+  }
+
+  destroy() {
+    ReactDOM.unmountComponentAtNode(document.getElementById(&quot;MainContent&quot;))
+  }
+}
+</code></pre>
+<p>Каждый модуль (кроме авторизации) содержит в себе следущие методы:</p>
+<p><code>init(path, state)</code> - инициализация модуля и вызов метода <code>eventHandler()</code>. Метод принимает два параметра:</p>
+<p><code>path</code> - урл при инициализации модуля;</p>
+<p><code>state</code> - данные которые передали при инициализации данного модуля;</p>
+<p><code>eventHandler()</code> - обработчик событий, содрежит в себе события уровня модуля, вызывается из метода <code>init()</code>;</p>
+<p><code>destroy()</code> - деструктор модуля. Чистит DOM дерево, отписывается от событий уровня модуля;</p>
+<p>Каждый модуль может вызвать метод <code>this.$$rout</code> - для роутинга и <code>this.$$publish</code> - для публикации события.</p>
+<p><code>this.$$rout({path, state})</code> - перейти на указанный урл <code>path</code> и передать данные <code>state</code>:</p>
+<p><code>obj.path</code> - урл вида <code>/module_name/item/1</code> первый элемент урла должен быть названием модуля, остальные элементы в произвольной форме;</p>
+<p><code>state</code> - объект с данными которые мы передаем по указанному урлу;</p>
+<p><code>this.$$publish(eventName, eventData)</code> - вызвать пользовательское событие eventName и передать в него данные eventData:</p>
+<p><code>eventName</code> - название события;</p>
+<p><code>eventData</code> - данные события;</p>
+<p>В данном примере для реализации модуля мы используем библиотеку <a href="https://reactjs.org/">React</a>. Так как классовый <a href="https://reactjs.org/">React</a> компонент не реализует паттерн <a href="https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D0%B1%D0%BB%D1%8E%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)">Наблюдатель</a>, мы добавляем в него данную функциональность <code>observ.install(this.reactApp)</code>.</p>
+<p>Методы класса Observable `src/core/observ.js</p>
+<p><code>$on(channel, cb)</code> - подписаться на событие:</p>
+<p><code>channel</code> - название события;</p>
+<p><code>cb</code> - коллбэк функция для обработки события;</p>
+<p><code>$onOnce(channel, cb)</code> - подписаться на событие, событие сработает один раз:</p>
+<p><code>channel</code> - название события;</p>
+<p><code>cb</code> - коллбэк функция для обработки события;</p>
+<p><code>$off(channel, cb)</code> - отписаться от события:</p>
+<p><code>channel</code> - название события;</p>
+<p><code>cb</code> - коллбэк функция;</p>
+<p><code>$emit(channel, data)</code> - публикация события:</p>
+<p><code>channel</code> - название события;</p>
+<p><code>data</code> - данные события;</p>
+<p><code>install(obj)</code> - установить в объект паттерн <a href="https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D0%B1%D0%BB%D1%8E%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)">Наблюдатель</a>:</p>
+<p><code>obj</code> - объект для которго необходимо установить паттерн <a href="https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D0%B1%D0%BB%D1%8E%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)">Наблюдатель</a>;</p>
+<h3>Пример модуля Root</h3>
+<pre class="prettyprint source"><code>/**
+ * Class Root
+ */
+import VueApp from &quot;ExampleRootVue/App.vue&quot;
+import Vue from &quot;vue&quot;
+import RootModule from &quot;OneDeckCore/root.module&quot;
+import axios from &quot;axios&quot;
+
+export default class Root extends RootModule {
+  init() {
+    VueApp.data.config = this.$$config
+    this.VueApp = new Vue(VueApp)
+
+    this.eventHandler()
+  }
+
+  eventHandler() {
+    axios.interceptors.response.use(undefined, error => {
+      this.ajaxError(error.response.data)
+      return Promise.reject(error)
+    })
+
+    this.VueApp.$on(&quot;rout&quot;, data =>
+      this.$$rout({
+        path: data.url,
+        state: data.state
+      })
+    )
+
+    this.$$subscribe(this.$$modules.reactApp, &quot;examplEvent&quot;, exampleData => {
+      this.exampleAction(exampleData)
+    })
+  }
+
+  exampleAction(exampleData) {
+    console.log(exampleData)
+  }
+
+  ajaxError(error) {
+    console.log(error)
+  }
+}
+</code></pre>
+<p>Модуль Root - Глобальный модуль всего приложения, содержит в себе глобальные события, например событие ошибки при ajax запросе <code>{axios.interceptors.response.use}</code>. Является медиатором (посредником), общение остальных модулей происходит через данный модуль. В нем мы можем подписывать остальные модули на глобальные пользовательсике события с помощь методоа <code>{this.$$subscribe}</code>. В Root модуле нет метода <code>destroy()</code>.</p>
+<p><code>this.$$subscribe(moduleObj, eventName, cb)</code> - подписать модуль на пользовательское событие.</p>
+<p><code>moduleObj</code> - объект модуля;</p>
+<p><code>eventName</code> - название события;</p>
+<p><code>cb</code> - коллбэк функция для обработки события;</p>
+<p><code>this.$$modules</code> - объек с модулями.</p>
+<h3>Пример модуля Auth (авторизации)</h3>
+<pre class="prettyprint source"><code>import Module from &quot;OneDeckCore/module&quot;
+import App from &quot;ExampleAuth/App.vue&quot;
+import Vue from &quot;vue&quot;
+
+/**
+ * Class ExampleAuth
+ * module use Vue
+ */
+export default class ExampleAuth extends Module {
+  constructor() {
+    super()
+    this.VueApp = new Vue(App)
+  }
+}
+</code></pre>
+<p>Модуль auth в простейшей реализации содержит в себе только конструктор, в котором происходит инициализация приложения для авторизации.</p>
+<h2>Роутинг</h2>
+<p>Можно использовать <a href="https://developer.mozilla.org/ru/docs/Web/API/History_API">html5 history api</a> - для этого в конфиге нужно указать <code>historyApi: true</code>.</p>
+<p>Каждый модуль содержит метод <code>$$rout({path, state})</code>. Первым элементом урл адреса всегда явлется название модуля (ключ объекта modules в конфиге).</p>
+<p><code>this.$$rout({path, state})</code> - перейти на указанный урл <code>path</code> и передать данные <code>state</code>:</p>
+<p><code>obj.path</code> - урл вида <code>/module_name/item/1</code> первый элемент урла должен быть названием модуля, остальные элементы в произвольной форме;</p>
+<p><code>state</code> - объект с данными которые мы передаем по указанному урлу;</p>
+<p><strong>ROOT_PATH</strong></p>
+<p>Корневой путь для приложения задается в конфиге поле <code>rootPath</code>.
+Пример если мы настроили наше наше приложнеи на url <code>http://my.com/test/path/</code> , нам необходимо указать в поле rootPath путь <code>/test/path/</code>.
+Если наше приложение стартует из <code>http://my.com</code> rootPath не указываем, либо указываем просто как пустая строка.</p>
+<p><strong>Переход на новый модуль:</strong></p>
+<ol>
+<li>
+<p>Вызываем в текущем модуле метод <code>destroy()</code></p>
+</li>
+<li>
+<p>Вызываем в новом модуле метод <code>init(path, state)</code>:</p>
+<p><code>path</code> - текущий урл</p>
+<p><code>state</code> - объект с данными который передали при переходе</p>
+</li>
+</ol>
+<p><strong>Переход в текущем модуле:</strong></p>
+<ol>
+<li>
+<p>Вызываем в текущем модуле метод <code>dispatcher(path, state)</code>:</p>
+<p><code>path</code> - текущий урл</p>
+<p><code>state</code> - объект с данными который передали при переходе</p>
+</li>
+</ol></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$$publish">$$publish</a></li><li><a href="global.html#$$rout">$$rout</a></li><li><a href="global.html#$$subscribe">$$subscribe</a></li><li><a href="global.html#$emit">$emit</a></li><li><a href="global.html#$off">$off</a></li><li><a href="global.html#$on">$on</a></li><li><a href="global.html#$onOnce">$onOnce</a></li><li><a href="global.html#_createLayout">_createLayout</a></li><li><a href="global.html#_createModules">_createModules</a></li><li><a href="global.html#_destroyLayout">_destroyLayout</a></li><li><a href="global.html#_destroyModule">_destroyModule</a></li><li><a href="global.html#_dispatcherModule">_dispatcherModule</a></li><li><a href="global.html#_eventHandler">_eventHandler</a></li><li><a href="global.html#_getModuleFromUrl">_getModuleFromUrl</a></li><li><a href="global.html#_initModule">_initModule</a></li><li><a href="global.html#_mounted">_mounted</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dispatcher">dispatcher</a></li><li><a href="global.html#eventHandler">eventHandler</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#install">install</a></li><li><a href="global.html#moduleMounted">moduleMounted</a></li><li><a href="global.html#mounted">mounted</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 01 2020 20:31:18 GMT+0300 (MSK)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

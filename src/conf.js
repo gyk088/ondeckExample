@@ -9,6 +9,7 @@ import ExampleLayoutVue from "ExampleLayoutVue/vue.layout"
 import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
 import ExampleGlobal from "ExampleGLobal/global.module"
 import ExampleEmbed from "ExampleEmbed/embed.module"
+import ExampleNotification from "ExampleNotification/notification.module"
 
 QuasarConfif()
 
@@ -44,7 +45,7 @@ export default {
       icon: "mdi-watch-import-variant",
       embed: {
         example: {
-          module: ExampleEmbed
+          module: ExampleEmbed,
         },
       }
     },
@@ -63,6 +64,12 @@ export default {
     globalwnd: {
       global: true,
       module: ExampleGlobal,
+      name: "Not found page",
+      icon: "fa-address-book",
+    },
+    globalnotification: {
+      global: true,
+      module: ExampleNotification,
       name: "Not found page",
       icon: "fa-address-book",
     },

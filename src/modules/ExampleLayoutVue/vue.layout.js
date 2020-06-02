@@ -21,7 +21,7 @@ export default class ExampleLayoutVue extends Module {
       })
     )
 
-    this.VueApp.$on("showGlobalWnd", () => this.$$publish("onShowGlobalWnd"))
+    this.VueApp.$on("showGlobalWnd", () => this.$$publish("showGlobalWnd"))
   }
 
   destroy () {

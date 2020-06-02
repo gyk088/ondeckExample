@@ -1,0 +1,29 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
+  },
+  "source": {
+    "include": [
+      "src"
+    ],
+    "includePattern": ".(vue|js|jsx)?$",
+    "excludePattern": ".(svg|jpeg|gif|jpg|css|scss)"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/jsdoc-vuejs"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true
+  },
+  "opts": {
+    "destination": "docs",
+    "recurse": true,
+    "readme": "README.md"
+  }
+}

@@ -13,12 +13,14 @@ export default class App extends React.Component {
 
   handleClick = buttonName => {
     this.setState(calculate(this.state, buttonName))
-    if (buttonName === "=")
+    if (buttonName === "=") {
       this.$emit("onSumm", calculate(this.state, buttonName).total)
-    // this.$$publish("examplEvent", calculate(this.state, buttonName).total)
+    }
+
+    this.$emit("notify", buttonName)
   }
 
-  render() {
+  render () {
     return (
       <div className="component-app">
         <Display value={this.state.next || this.state.total || "0"} />

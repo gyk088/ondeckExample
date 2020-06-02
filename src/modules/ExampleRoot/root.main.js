@@ -23,10 +23,15 @@ export default class Root extends RootModule {
 
     this.$$subscribe("examplEvent", exampleData => {
       this.exampleAction(exampleData)
+      this.$$modules.globalwnd.show()
     })
 
-    this.$$subscribe("onShowGlobalWnd", () => {
+    this.$$subscribe("showGlobalWnd", () => {
       this.$$modules.globalwnd.show()
+    })
+
+    this.$$subscribe("notify", text => {
+      this.$$modules.globalnotification.notify(text)
     })
   }
 

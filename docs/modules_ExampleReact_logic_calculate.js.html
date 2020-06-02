@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: modules/ExampleReact/logic/calculate.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: modules/ExampleReact/logic/calculate.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Big from "big.js";
+
+import operate from "./operate";
+import isNumber from "./isNumber";
+
+/**
+ * Given a button name and a calculator data object, return an updated
+ * calculator data object.
+ *
+ * Calculator data object contains:
+ *   total:String      the running total
+ *   next:String       the next number to be operated on with the total
+ *   operation:String  +, -, etc.
+ */
+export default function calculate(obj, buttonName) {
+  if (buttonName === "AC") {
+    return {
+      total: null,
+      next: null,
+      operation: null,
+    };
+  }
+
+  if (isNumber(buttonName)) {
+    if (buttonName === "0" &amp;&amp; obj.next === "0") {
+      return {};
+    }
+    // If there is an operation, update next
+    if (obj.operation) {
+      if (obj.next) {
+        return { next: obj.next + buttonName };
+      }
+      return { next: buttonName };
+    }
+    // If there is no operation, update next and clear the value
+    if (obj.next) {
+      const next = obj.next === "0" ? buttonName : obj.next + buttonName;
+      return {
+        next,
+        total: null,
+      };
+    }
+    return {
+      next: buttonName,
+      total: null,
+    };
+  }
+
+  if (buttonName === "%") {
+    if (obj.operation &amp;&amp; obj.next) {
+      const result = operate(obj.total, obj.next, obj.operation);
+      return {
+        total: Big(result)
+          .div(Big("100"))
+          .toString(),
+        next: null,
+        operation: null,
+      };
+    }
+    if (obj.next) {
+      return {
+        next: Big(obj.next)
+          .div(Big("100"))
+          .toString(),
+      };
+    }
+    return {};
+  }
+
+  if (buttonName === ".") {
+    if (obj.next) {
+      // ignore a . if the next number already has one
+      if (obj.next.includes(".")) {
+        return {};
+      }
+      return { next: obj.next + "." };
+    }
+    return { next: "0." };
+  }
+
+  if (buttonName === "=") {
+    if (obj.next &amp;&amp; obj.operation) {
+      return {
+        total: operate(obj.total, obj.next, obj.operation),
+        next: null,
+        operation: null,
+      };
+    } else {
+      // '=' with no operation, nothing to do
+      return {};
+    }
+  }
+
+  if (buttonName === "+/-") {
+    if (obj.next) {
+      return { next: (-1 * parseFloat(obj.next)).toString() };
+    }
+    if (obj.total) {
+      return { total: (-1 * parseFloat(obj.total)).toString() };
+    }
+    return {};
+  }
+
+  // Button must be an operation
+
+  // When the user presses an operation button without having entered
+  // a number first, do nothing.
+  // if (!obj.next &amp;&amp; !obj.total) {
+  //   return {};
+  // }
+
+  // User pressed an operation button and there is an existing operation
+  if (obj.operation) {
+    return {
+      total: operate(obj.total, obj.next, obj.operation),
+      next: null,
+      operation: buttonName,
+    };
+  }
+
+  // no operation yet, but the user typed one
+
+  // The user hasn't typed a number yet, just save the operation
+  if (!obj.next) {
+    return { operation: buttonName };
+  }
+
+  // save the operation and shift 'next' into 'total'
+  return {
+    total: obj.next,
+    next: null,
+    operation: buttonName,
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$$publish">$$publish</a></li><li><a href="global.html#$$rout">$$rout</a></li><li><a href="global.html#$$subscribe">$$subscribe</a></li><li><a href="global.html#$emit">$emit</a></li><li><a href="global.html#$off">$off</a></li><li><a href="global.html#$on">$on</a></li><li><a href="global.html#$onOnce">$onOnce</a></li><li><a href="global.html#_createLayout">_createLayout</a></li><li><a href="global.html#_createModules">_createModules</a></li><li><a href="global.html#_destroyLayout">_destroyLayout</a></li><li><a href="global.html#_destroyModule">_destroyModule</a></li><li><a href="global.html#_dispatcherModule">_dispatcherModule</a></li><li><a href="global.html#_eventHandler">_eventHandler</a></li><li><a href="global.html#_getModuleFromUrl">_getModuleFromUrl</a></li><li><a href="global.html#_initModule">_initModule</a></li><li><a href="global.html#_mounted">_mounted</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dispatcher">dispatcher</a></li><li><a href="global.html#eventHandler">eventHandler</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#install">install</a></li><li><a href="global.html#moduleMounted">moduleMounted</a></li><li><a href="global.html#mounted">mounted</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 01 2020 20:31:18 GMT+0300 (MSK)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

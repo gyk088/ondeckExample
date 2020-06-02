@@ -7,8 +7,18 @@ import Vue from "vue"
  * module use Vue
  */
 export default class ExampleEmbed extends Module {
-  init () {
+  init (module) {
+    this.moduleName = module[0]
     this.VueApp = new Vue(App)
+    this.eventHandler()
+  }
+
+  eventHandler () {
+    this.VueApp.$on("notify", () => this.$$publish("notify", `EMBED: ${this.moduleName}`))
+  }
+
+  dispatcher (module) {
+    this.VueApp.setData(module[0])
   }
 
   destroy () {

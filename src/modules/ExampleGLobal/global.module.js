@@ -15,4 +15,8 @@ export default class ExampleGlobal extends Module {
   show () {
     this.Window.show()
   }
+
+  dispatcher (module, state) {
+    console.log('global:', module, state)
+  }
 }

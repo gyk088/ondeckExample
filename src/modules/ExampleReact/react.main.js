@@ -22,9 +22,6 @@ export default class ExampleReact extends Module {
 
     axios("/some.pl")
 
-    // this.reactApp.$$publish = this.$$publish
-    // this.reactApp.$$rout = this.$$rout
-
     let observ = new Observable()
     observ.install(this.reactApp)
 
@@ -33,6 +30,7 @@ export default class ExampleReact extends Module {
 
   eventHandler () {
     this.reactApp.$on("onSumm", summ => this.$$publish("examplEvent", summ))
+    this.reactApp.$on("notify", btnmane => this.$$publish("notify", btnmane))
   }
 
   destroy () {
