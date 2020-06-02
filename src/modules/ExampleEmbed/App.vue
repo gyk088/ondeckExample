@@ -1,5 +1,8 @@
 <template>
-  <div id="Embed" @click="$emit('notify')">
+  <div
+    id="Embed"
+    @click="$emit('notify')"
+  >
     <div class="embed-block">
       <q-parallax src="https://cdn.quasar.dev/img/parallax2.jpg">
         <h1>{{ data }}</h1>
@@ -9,28 +12,28 @@
 </template>
 
 <script>
-import store from 'ExampleEmbed/store'
-import { mapState, mapMutations } from 'vuex'
+import store from 'ExampleEmbed/store';
+import { mapState, mapMutations } from 'vuex';
 
-export default  {
-  name: 'EmbedApp',
+export default {
   el: '#Embed',
-  store: store,
+  name: 'EmbedApp',
+  store,
   computed: {
     ...mapState({
-      data: state => state.data,
+      data: (state) => state.data,
 
     }),
 
     vSelected: {
-      get() { return this.selected },
-      set(value) {this.select(value)}
-    }
+      get() { return this.selected; },
+      set(value) { this.select(value); },
+    },
   },
   methods: {
     ...mapMutations(['setData']),
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

@@ -1,41 +1,45 @@
+export function isFunction(obj) {
+  return Object.prototype.toString.call(obj) === '[object Function]';
+}
+
+export function isArray(obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+export function isObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+export function isEmpty(obj) {
+  let flag = false;
+  if (Object.prototype.toString.call(obj) !== '[object Object]') {
+    return flag;
+  }
+
+  Object.keys(obj).forEach((key) => {
+    if (Object.prototype.isPrototypeOf.call(obj, key)) {
+      flag = true;
+    }
+  });
+
+  return flag;
+}
+
 /**
  * Copy object
  * @param  {Object}  obj - object
  * @param  {boolean} req - deep copy
- * @return {Object}      - сopy object
+ * @return {Object}      - copy object
  */
-export function clone (obj, req) {
-  var newObj = isArray(obj) ? [] : {}
-  for (var i in obj) {
-    if (req && typeof obj[i] === "object" && i !== "prototype") {
-      newObj[i] = clone(obj[i])
+export function clone(obj, req) {
+  const newObj = isArray(obj) ? [] : {};
+  Object.keys(obj).forEach((key) => {
+    if (req && typeof obj[key] === 'object' && key !== 'prototype') {
+      newObj[key] = clone(obj[key]);
     } else {
-      newObj[i] = obj[i]
+      newObj[key] = obj[key];
     }
-  }
-  return newObj
-}
+  });
 
-export function isFunction (obj) {
-  return Object.prototype.toString.call(obj) === "[object Function]"
-}
-
-export function isArray (obj) {
-  return Object.prototype.toString.call(obj) === "[object Array]"
-}
-
-export function isObject (obj) {
-  return Object.prototype.toString.call(obj) === "[object Object]"
-}
-
-export function isEmpty (obj) {
-  if (Object.prototype.toString.call(obj) !== "[object Object]") {
-    return false
-  }
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      return false
-    }
-  }
-  return true
+  return newObj;
 }

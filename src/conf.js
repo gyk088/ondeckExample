@@ -1,7 +1,7 @@
-import QuasarConfif from "./quasar.config"
-import ExampleRoot from "ExampleRoot/root.main"
+import ExampleRoot from 'ExampleRoot/root';
+import QuasarConfif from './quasar.config';
 
-QuasarConfif()
+QuasarConfif();
 
 export default {
   historyApi: false,
@@ -13,55 +13,55 @@ export default {
   module404: 'notfound',
   modules: {
     auth: {
-      module: "ExampleAuth/auth.main",
-      name: "Auth page",
-      icon: "fa-camera",
+      module: 'ExampleAuth',
+      name: 'Auth page',
+      icon: 'fa-camera',
     },
     main: {
-      layout: "ExampleLayoutWebix/webix.layout",
-      module: "ExampleWebix/webix.main",
-      name: "Webix App",
-      icon: "fa-camera",
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleWebix',
+      name: 'Webix App',
+      icon: 'fa-camera',
       embed: {
         example: {
-          module: "ExampleEmbed/embed.module"
+          module: 'ExampleEmbed',
         },
-      }
+      },
     },
     vueApp: {
-      layout: "ExampleLayoutWebix/webix.layout",
-      module: "ExampleVue/vue.main",
-      name: "Vue App",
-      icon: "mdi-watch-import-variant",
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleVue',
+      name: 'Vue App',
+      icon: 'mdi-watch-import-variant',
       embed: {
         example: {
-          module: "ExampleEmbed/embed.module",
+          module: 'ExampleEmbed',
         },
-      }
+      },
     },
     reactApp: {
-      layout: "ExampleLayoutVue/vue.layout",
-      module: "ExampleReact/react.main",
-      name: "React App",
-      icon: "fa-address-book",
+      layout: 'ExampleLayoutVue',
+      module: 'ExampleReact',
+      name: 'React App',
+      icon: 'fa-address-book',
     },
     notfound: {
-      layout: "ExampleLayoutWebix/webix.layout",
-      module: "ExampleError404/error.main",
-      name: "Not found page",
-      icon: "fa-address-book",
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleError404',
+      name: 'Not found page',
+      icon: 'fa-address-book',
     },
     globalwnd: {
       global: true,
-      module: "ExampleGLobal/global.module",
-      name: "Not found page",
-      icon: "fa-address-book",
+      module: 'ExampleGLobal',
+      name: 'Not found page',
+      icon: 'fa-address-book',
     },
     globalnotification: {
       global: true,
-      module: "ExampleNotification/notification.module",
-      name: "Not found page",
-      icon: "fa-address-book",
+      module: 'ExampleNotification',
+      name: 'Not found page',
+      icon: 'fa-address-book',
     },
-  }
-}
+  },
+};

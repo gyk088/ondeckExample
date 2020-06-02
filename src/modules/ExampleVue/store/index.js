@@ -1,28 +1,38 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const defaultState = () => ({
   selected: [],
   columns: [
-    { name: 'id', label: 'ID', field: 'id', sortable: true },
+    {
+      name: 'id', label: 'ID', field: 'id', sortable: true,
+    },
     {
       name: 'name',
       required: true,
       label: 'Dessert (100g serving)',
       align: 'left',
-      field: row => row.name,
-      format: val => `${val}`,
-      sortable: true
+      field: (row) => row.name,
+      format: (val) => `${val}`,
+      sortable: true,
     },
-    { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
-    { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
+    {
+      name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true,
+    },
+    {
+      name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true,
+    },
     { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
     { name: 'protein', label: 'Protein (g)', field: 'protein' },
     { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-    { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-    { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+    {
+      name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+    },
+    {
+      name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+    },
   ],
   data: [
     {
@@ -34,7 +44,7 @@ const defaultState = () => ({
       protein: 4.0,
       sodium: 87,
       calcium: '14%',
-      iron: '1%'
+      iron: '1%',
     },
     {
       id: 2,
@@ -45,7 +55,7 @@ const defaultState = () => ({
       protein: 4.3,
       sodium: 129,
       calcium: '8%',
-      iron: '1%'
+      iron: '1%',
     },
     {
       id: 3,
@@ -56,7 +66,7 @@ const defaultState = () => ({
       protein: 6.0,
       sodium: 337,
       calcium: '6%',
-      iron: '7%'
+      iron: '7%',
     },
     {
       id: 1,
@@ -67,7 +77,7 @@ const defaultState = () => ({
       protein: 4.3,
       sodium: 413,
       calcium: '3%',
-      iron: '8%'
+      iron: '8%',
     },
     {
       id: 4,
@@ -78,7 +88,7 @@ const defaultState = () => ({
       protein: 3.9,
       sodium: 327,
       calcium: '7%',
-      iron: '16%'
+      iron: '16%',
     },
     {
       id: 5,
@@ -89,7 +99,7 @@ const defaultState = () => ({
       protein: 0.0,
       sodium: 50,
       calcium: '0%',
-      iron: '0%'
+      iron: '0%',
     },
     {
       id: 6,
@@ -100,7 +110,7 @@ const defaultState = () => ({
       protein: 0,
       sodium: 38,
       calcium: '0%',
-      iron: '2%'
+      iron: '2%',
     },
     {
       id: 7,
@@ -111,7 +121,7 @@ const defaultState = () => ({
       protein: 6.5,
       sodium: 562,
       calcium: '0%',
-      iron: '45%'
+      iron: '45%',
     },
     {
       id: 8,
@@ -122,7 +132,7 @@ const defaultState = () => ({
       protein: 4.9,
       sodium: 326,
       calcium: '2%',
-      iron: '22%'
+      iron: '22%',
     },
     {
       id: 9,
@@ -133,16 +143,16 @@ const defaultState = () => ({
       protein: 7,
       sodium: 54,
       calcium: '12%',
-      iron: '6%'
-    }
-  ]
-})
+      iron: '6%',
+    },
+  ],
+});
 
 export default new Vuex.Store({
   state: defaultState(),
   mutations: {
-    select (state, selected) {
-      Vue.set(state, "selected", selected)
-    }
-  }
-})
+    select(state, selected) {
+      Vue.set(state, 'selected', selected);
+    },
+  },
+});

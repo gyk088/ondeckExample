@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const defaultState = () => ({
-  data: ""
-})
+  data: '',
+});
 
 export default new Vuex.Store({
   state: defaultState(),
   mutations: {
-    setData (state, str) {
-      Vue.set(state, "data", `${state.data} + ${str}`)
-    }
-  }
-})
+    setData(state, str) {
+      Vue.set(state, 'data', `${state.data} + ${str}`);
+    },
+  },
+});

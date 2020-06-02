@@ -6,25 +6,23 @@
         class="q-px-xl q-py-xs"
         color="purple"
         label="АВТОРИЗАЦИЯ"
-        @click='auth'
+        @click="auth"
       />
     </div>
   </div>
 </template>
 
 <script>
-import Cookies from "js-cookie"
 
-export default  {
-  name: 'VueApp',
+export default {
   el: '#ROOT',
+  name: 'VueApp',
   methods: {
-    auth () {
-      Cookies.set("token", "1234")
-      this.$emit('onAuth')
-    }
-  }
-}
+    auth() {
+      this.$emit('onAuth');
+    },
+  },
+};
 </script>
 
 <style scoped>

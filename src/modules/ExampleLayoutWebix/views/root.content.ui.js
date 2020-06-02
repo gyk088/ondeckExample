@@ -3,35 +3,35 @@
  */
 export default class RootContentUI {
   constructor() {
-    this.id = "RootContent"
-    return this.ui()
+    this.id = 'RootContent';
+    return this.ui();
   }
 
-  content () {
+  content() {
     return {
-      template: '<div id="MainContent"></div><div id="Embed"></div>'
-    }
+      template: '<div id="MainContent"></div><div id="Embed"></div>',
+    };
   }
 
-  toolBar () {
+  toolBar() {
     return {
-      view: "toolbar",
-      id: this.id + "Toolbar",
-      css: "onedeck_toolbar",
+      view: 'toolbar',
+      id: `${this.id}Toolbar`,
+      css: 'onedeck_toolbar',
       elements: [
-        { view: "icon", icon: "mdi mdi-menu", id: this.id + "MenuOpenBtn" },
-        { view: "label", label: "OneDeck", id: this.id + "ToolbarLabel" },
+        { view: 'icon', icon: 'mdi mdi-menu', id: `${this.id}MenuOpenBtn` },
+        { view: 'label', label: 'OneDeck', id: `${this.id}ToolbarLabel` },
         {},
-        { view: "icon", icon: "mdi mdi-cogs", id: this.id + "GlobalWndBtn" }
-      ]
-    }
+        { view: 'icon', icon: 'mdi mdi-cogs', id: `${this.id}GlobalWndBtn` },
+      ],
+    };
   }
 
-  ui () {
+  ui() {
     return {
-      container: "ROOT",
+      container: 'ROOT',
       id: this.id,
-      rows: [this.toolBar(), this.content()]
-    }
+      rows: [this.toolBar(), this.content()],
+    };
   }
 }

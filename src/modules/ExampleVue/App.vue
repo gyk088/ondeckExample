@@ -1,6 +1,6 @@
 <template>
   <div id="MainContent">
-     <div class="q-pa-md">
+    <div class="q-pa-md">
       <q-table
         title="Treats"
         :data="data"
@@ -9,39 +9,39 @@
         selection="single"
         :selected-rows-label="getSelectedString"
         :selected.sync="vSelected"
-      ></q-table>
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-import store from 'ExampleVue/store'
+import { mapState, mapMutations } from 'vuex';
+import store from 'ExampleVue/store';
 
-export default  {
-  name: 'VueApp',
+export default {
   el: '#MainContent',
-  store: store,
+  name: 'VueApp',
+  store,
   computed: {
     ...mapState({
-      data: state => state.data,
-      columns: state => state.columns,
-      selected: state => state.selected,
+      data: (state) => state.data,
+      columns: (state) => state.columns,
+      selected: (state) => state.selected,
     }),
 
     vSelected: {
-      get() { return this.selected },
-      set(value) {this.select(value)}
-    }
+      get() { return this.selected; },
+      set(value) { this.select(value); },
+    },
   },
   methods: {
     ...mapMutations(['select']),
 
-    getSelectedString () {
-      this.$emit('onRowClick', this.selected)
-    }
-  }
-}
+    getSelectedString() {
+      this.$emit('onRowClick', this.selected);
+    },
+  },
+};
 </script>
 
 <style>

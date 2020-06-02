@@ -1,6 +1,6 @@
 export default class Observable {
   constructor() {
-    this.listeners = {}
+    this.listeners = {};
   }
 
   /**
@@ -10,12 +10,12 @@ export default class Observable {
    */
   $on(channel, cb) {
     if (!this.listeners[channel]) {
-      this.listeners[channel] = {}
-      this.listeners[channel].eventProperty = {}
-      this.listeners[channel].eventProperty.isOnOnce = false
-      this.listeners[channel].data = []
+      this.listeners[channel] = {};
+      this.listeners[channel].eventProperty = {};
+      this.listeners[channel].eventProperty.isOnOnce = false;
+      this.listeners[channel].data = [];
     }
-    this.listeners[channel].data.push(cb)
+    this.listeners[channel].data.push(cb);
   }
 
   /**
@@ -24,8 +24,8 @@ export default class Observable {
    * @param {function} cb - callback function.
    */
   $onOnce(channel, cb) {
-    this.on(channel, cb)
-    this.listeners[channel].eventProperty.isOnOnce = true
+    this.on(channel, cb);
+    this.listeners[channel].eventProperty.isOnOnce = true;
   }
 
   /**
@@ -35,10 +35,8 @@ export default class Observable {
    */
   $off(channel, cb) {
     this.listeners[channel].data = this.listeners[channel].data.filter(
-      listener => {
-        return listener !== cb
-      }
-    )
+      (listener) => listener !== cb,
+    );
   }
 
   /**
@@ -48,27 +46,27 @@ export default class Observable {
    */
   $emit(channel, data) {
     if (!this.listeners[channel] || !this.listeners[channel].data) {
-      console.error("No such event:", channel)
-      return
+      console.error('No such event:', channel);
+      return;
     }
 
-    this.listeners[channel].data.forEach(listener => {
+    this.listeners[channel].data.forEach((listener) => {
       if (this.listeners[channel].eventProperty.isOnOnce) {
-        this.off(e, this.listeners[channel].data[0])
+        this.$off(channel, this.listeners[channel].data[0]);
       }
-      listener(data)
-    })
+      listener(data);
+    });
   }
 
   /**
    * install an observer in the object
-   * @param {Object} obj - object in which we install the observer
+   * @param {Object} extendObj - object in which we install the observer
    */
-  install(obj) {
-    obj.listeners = this.listeners
-    obj.$on = this.$on
-    obj.$off = this.$off
-    obj.$onOnce = this.$onOnce
-    obj.$emit = this.$emit
+  install(extendObj) {
+    extendObj.listeners = this.listeners;
+    extendObj.$on = this.$on;
+    extendObj.$off = this.$off;
+    extendObj.$onOnce = this.$onOnce;
+    extendObj.$emit = this.$emit;
   }
 }

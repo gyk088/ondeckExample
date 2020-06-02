@@ -1,12 +1,12 @@
-import Module from "OneDeckCore/module"
-import { Notify } from 'quasar'
+import Module from 'OneDeckCore/module';
+import { Notify } from 'quasar';
 
 /**
  * Class ExampleNotification
  * module use Vue
  */
 export default class ExampleNotification extends Module {
-  dispatcher (module, state) {
+  dispatcher(module) {
     Notify.create({
       color: 'teal',
       position: 'top-right',
@@ -14,16 +14,16 @@ export default class ExampleNotification extends Module {
       textColor: 'white',
       actions: [{ icon: 'close', color: 'white' }],
       message: `MODULE : ${module[0]}`,
-    })
+    });
   }
 
-  notify (text) {
+  notify(text) {
     Notify.create({
       position: 'top',
       timeout: 500,
       textColor: 'white',
       actions: [{ icon: 'close', color: 'white' }],
       message: text,
-    })
+    });
   }
 }

@@ -8,7 +8,7 @@ export default class Module {
    * should contain all events
    * @abstract
    */
-  eventHandler () { }
+  eventHandler() { }
 
   /**
    * this method must be overridden by sub class.
@@ -18,14 +18,14 @@ export default class Module {
    * @param {Object} state - current state.
    * @abstract
    */
-  init (path, state) { }
+  init() { }
 
   /**
    * this method must be overridden by sub class.
    * unsubscribes from module events and deletes all objects for cleans the DOM tree
    * @abstract
    */
-  destroy () { }
+  destroy() { }
 
   /**
    * this method must be overridden by sub class.
@@ -34,7 +34,7 @@ export default class Module {
    * @param {Object} state - current state.
    * @abstract
    */
-  dispatcher (path, state) { }
+  dispatcher() { }
 
   /**
   * Called immediately after mounting
@@ -47,5 +47,5 @@ export default class Module {
   * @param {Module} currentLayout - текущий макет.
   * @abstract
   */
-  mounted (currentModule, currentLayout) { }
+  mounted() { }
 }
