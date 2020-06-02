@@ -6,8 +6,7 @@ import WindowModule from "ExampleGLobal/comtrollers/window"
  * module use Vue
  */
 export default class ExampleGlobal extends Module {
-  constructor() {
-    super()
+  init () {
     this.Window = new WindowModule()
     this.Window.show()
   }

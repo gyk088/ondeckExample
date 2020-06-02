@@ -45,12 +45,13 @@ const PATHS = {
 }
 
 module.exports = {
-  entry: { main: "./src/index.js" },
+  entry: ["@babel/polyfill", "./src/index.js"],
   output: {
     filename: "[name].[hash].js",
     path: PATHS.dist,
   },
   optimization: {
+    minimize: false,
     splitChunks: {
       cacheGroups: {
         vendor: {

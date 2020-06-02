@@ -8,6 +8,7 @@ import Vue from "vue"
  */
 export default class ExampleEmbed extends Module {
   init (module) {
+    console.log('asdasdasdasdasdadasasadasdasdas')
     this.moduleName = module[0]
     this.VueApp = new Vue(App)
     this.eventHandler()

@@ -33,11 +33,8 @@ export default class RootMediator {
     // состояние по указоннму url (если не используем history api)
     this._urlState = {}
 
-    // cоздаем все макеты
-    this._createLayout()
-
-    // cоздаем все модули
-    this._createModules()
+    // инициализируем глобальные модули
+    this._initGlobalModules()
 
     // вызываем глобаьное событие popstate
     this._eventHandler()
@@ -218,63 +215,99 @@ export default class RootMediator {
     return url.split("/")
   }
 
+  _initGlobalModules () {
+    Object.keys(this.$$config.modules)
+      .filter(moduleName => this.$$config.modules[moduleName].global)
+      .forEach(moduleName => this._createModule(moduleName, this.$$config.modules[moduleName]))
+  }
+
   /**
    * this method creates all modules object
    * создаем все модули из конфига
    */
-  _createModules () {
-    if (!isEmpty(this.$$modules)) return
+  _createModule = async (moduleName, moduleConf) => {
+    // Если уже подгрузили module - выходим
+    if (this.$$modules[moduleName]) return
 
-    Object.keys(this.$$config.modules).forEach(key => {
-      // создаем модуль
-      this.$$modules[key] = new this.$$config.modules[key].module()
-      // глобальный модуль
-      this.$$modules[key].$$global = this.$$config.modules[key].global
-      // добавляем метод rout для маршрутизации
-      this.$$modules[key].$$rout = this.$$rout.bind(this)
-      // добавляем метод  publish для публикации глобальных событий
-      this.$$modules[key].$$publish = this.$$publish.bind(this)
-      // конфиг
-      this.$$modules[key].$$config = this.$$config
-      // встраиваемые модули
-      this.$$modules[key].$$embed = {}
+    let moduleClass;
+    try {
+      moduleClass = await import("../modules/" + moduleConf.module + ".js")
+      if (!moduleClass.default) {
+        throw new SyntaxError(`Error export default in  ${moduleName}`);
+      }
+      moduleClass = moduleClass.default
+    } catch (e) {
+      throw e;
+    }
 
-      if (this.$$config.modules[key].embed) {
-        this.$$modules[key].$$embed
-        Object.keys(this.$$config.modules[key].embed).forEach(embedName => {
-          this.$$modules[key].$$embed[embedName] = new this.$$config.modules[key].embed[embedName].module()
-          this.$$modules[key].$$embed[embedName].$$rout = this.$$rout.bind(this)
-          this.$$modules[key].$$embed[embedName].$$publish = this.$$publish.bind(this)
-          this.$$modules[key].$$embed[embedName].$$publish.$$config = this.$$config
-        })
+    // создаем модуль
+    this.$$modules[moduleName] = new moduleClass()
+    // глобальный модуль
+    this.$$modules[moduleName].$$global = moduleConf.global
+    // добавляем метод rout для маршрутизации
+    this.$$modules[moduleName].$$rout = this.$$rout.bind(this)
+    // добавляем метод  publish для публикации глобальных событий
+    this.$$modules[moduleName].$$publish = this.$$publish.bind(this)
+    // конфиг
+    this.$$modules[moduleName].$$config = this.$$config
+    // макет модуля
+    this.$$modules[moduleName].$$layoutName = moduleConf.layout
+    // встраиваемые модули
+    this.$$modules[moduleName].$$embed = {}
+
+    if (moduleConf.embed) {
+      const embedNames = Object.keys(moduleConf.embed);
+
+      for (let i = 0; i < embedNames.length; i++) {
+        let embedClass;
+        try {
+          embedClass = await import("../modules/" + moduleConf.embed[embedNames[i]].module + ".js")
+          if (!embedClass.default) {
+            throw new SyntaxError(`Error export default in  ${embedNames[i]}`);
+          }
+          embedClass = embedClass.default
+        } catch (e) {
+          throw e;
+        }
+
+        this.$$modules[moduleName].$$embed[embedNames[i]] = new embedClass()
+        this.$$modules[moduleName].$$embed[embedNames[i]].$$rout = this.$$rout.bind(this)
+        this.$$modules[moduleName].$$embed[embedNames[i]].$$publish = this.$$publish.bind(this)
+        this.$$modules[moduleName].$$embed[embedNames[i]].$$publish.$$config = this.$$config
       }
-      if (this.$$config.modules[key].layout) {
-        // макет модуля
-        this.$$modules[key].$$layoutName = this.$$config.modules[key].layout.name
-      }
-    })
+    }
+
+    // Если модуль глобальный - сразу его инициализируем
+    this.$$modules[moduleName].$$global && this.$$modules[moduleName].init(moduleName)
   }
 
   /**
   * this method creates all layouts object
   * создаем все макеты из конфига
   */
-  _createLayout () {
-    if (!isEmpty(this.$$layouts)) return
+  _createLayout = async (layoutName) => {
+    // Если уже подгрузили layout - выходим
+    if (this.$$layouts[layoutName]) return
 
-    Object.keys(this.$$config.modules).forEach(key => {
-      if (this.$$config.modules[key].layout) {
-        const name = this.$$config.modules[key].layout.name
-        // создаем мает
-        this.$$layouts[name] = new this.$$config.modules[key].layout()
-        // добавляем метод rout для маршрутизации
-        this.$$layouts[name].$$rout = this.$$rout.bind(this)
-        // добавляем метод  publish для публикации глобальных событий
-        this.$$layouts[name].$$publish = this.$$publish.bind(this)
-        // конфиг
-        this.$$layouts[name].$$config = this.$$config
+    let layoutClass;
+    try {
+      layoutClass = await import("../modules/" + layoutName + ".js")
+      if (!layoutClass.default) {
+        throw new SyntaxError(`Error export default in  ${layoutName}`);
       }
-    })
+      layoutClass = layoutClass.default
+    } catch (e) {
+      throw e;
+    }
+
+    // создаем макет
+    this.$$layouts[layoutName] = new layoutClass()
+    // добавляем метод rout для маршрутизации
+    this.$$layouts[layoutName].$$rout = this.$$rout.bind(this)
+    // добавляем метод  publish для публикации глобальных событий
+    this.$$layouts[layoutName].$$publish = this.$$publish.bind(this)
+    // конфиг
+    this.$$layouts[layoutName].$$config = this.$$config
   }
 
   /**
@@ -310,8 +343,10 @@ export default class RootMediator {
    * @param {Object} moduleData.state - current state.
    * @param {boolean} moduleData.pushState - flag indicates save to history api.
    */
-  _initModule (moduleData) {
+  _initModule = async (moduleData) => {
     let moduleName = moduleData.module[0]
+
+    const mudules = this.$$config.modules;
 
     if (!moduleName) {
       this.$$rout({
@@ -319,8 +354,8 @@ export default class RootMediator {
       })
       return;
     }
-
-    if (!this.$$modules[moduleName]) {
+    this.$$config
+    if (!mudules[moduleName]) {
       this.$$rout({
         path: this.$$config.module404
       })
@@ -328,7 +363,7 @@ export default class RootMediator {
     }
 
     // Если это глобальный или встраиваемый модуль - они не учавствует в роутинге
-    if (this.$$modules[moduleName].$$global) {
+    if (mudules[moduleName].global) {
       this.$$rout({
         path: this.$$config.module404
       })
@@ -337,21 +372,28 @@ export default class RootMediator {
 
     // Создаем макет если он есть
     if (
-      this.$$modules[moduleName].$$layoutName &&
-      this.$$modules[moduleName].$$layoutName === this.$$currentLayout.name
+      mudules[moduleName].layout &&
+      mudules[moduleName].layout === this.$$currentLayout.name
     ) {
       // Если переход внутри текущего макета
       this.$$currentLayout.obj.dispatcher(moduleData.module, moduleData.state)
-    } else if (this.$$modules[moduleName].$$layoutName) {
-      // Если переход на новый макет то чистим модуль а потом макет
+    } else if (mudules[moduleName].layout) {
+
       this._destroyModule()
       this._destroyLayout()
 
+      // Если переход на новый макет то чистим модуль а потом макет
+      try {
+        await this._createLayout(mudules[moduleName].layout)
+      } catch (e) {
+        console.error(e)
+      }
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentLayout = {
-        name: this.$$modules[moduleName].$$layoutName,
-        obj: this.$$layouts[this.$$modules[moduleName].$$layoutName]
+        name: mudules.layout,
+        obj: this.$$layouts[mudules[moduleName].layout]
       }
+
       // Инициализируем новый макет (вызываем метод init)
       this.$$currentLayout.obj.init(moduleData.module, moduleData.state)
     } else {
@@ -370,6 +412,14 @@ export default class RootMediator {
     } else {
       // Если переход на новый модуль - вызываем деструктор текущего модуля (метод destroy)
       this._destroyModule()
+
+      // Если переход на новый макет то чистим модуль а потом макет
+      try {
+        await this._createModule(moduleName, mudules[moduleName])
+      } catch (e) {
+        console.error(e)
+      }
+
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentModule = {
         name: moduleName,
@@ -379,7 +429,10 @@ export default class RootMediator {
       // Инициализируем новый модуль (вызываем метод init)
       this.$$currentModule.obj.init(moduleData.module, moduleData.state)
       // Инициализируем встроенные модули
-      Object.keys(this.$$currentModule.obj.$$embed).forEach(name => this.$$currentModule.obj.$$embed[name].init(moduleData.module, moduleData.state))
+      Object.keys(this.$$currentModule.obj.$$embed)
+        .forEach(name =>
+          this.$$currentModule.obj.$$embed[name].init(moduleData.module, moduleData.state)
+        )
 
       this._dispatcherModule(moduleData.module, moduleData.state)
     }
@@ -396,6 +449,4 @@ export default class RootMediator {
     // в этом   методе у нас есть доступ к  this.$$currentModule
     this._mounted()
   }
-
-
 }

@@ -1,15 +1,5 @@
 import QuasarConfif from "./quasar.config"
-import WebixApp from "ExampleWebix/webix.main"
-import VueApp from "ExampleVue/vue.main"
-import ReactApp from "ExampleReact/react.main"
-import Error404 from "ExampleError404/error.main"
 import ExampleRoot from "ExampleRoot/root.main"
-import ExampleAuth from "ExampleAuth/auth.main"
-import ExampleLayoutVue from "ExampleLayoutVue/vue.layout"
-import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
-import ExampleGlobal from "ExampleGLobal/global.module"
-import ExampleEmbed from "ExampleEmbed/embed.module"
-import ExampleNotification from "ExampleNotification/notification.module"
 
 QuasarConfif()
 
@@ -23,53 +13,53 @@ export default {
   module404: 'notfound',
   modules: {
     auth: {
-      module: ExampleAuth,
+      module: "ExampleAuth/auth.main",
       name: "Auth page",
       icon: "fa-camera",
     },
     main: {
-      layout: ExampleLayoutWebix,
-      module: window.innerWidth < 1300 ? VueApp : WebixApp,
+      layout: "ExampleLayoutWebix/webix.layout",
+      module: "ExampleWebix/webix.main",
       name: "Webix App",
       icon: "fa-camera",
       embed: {
         example: {
-          module: ExampleEmbed
+          module: "ExampleEmbed/embed.module"
         },
       }
     },
     vueApp: {
-      layout: ExampleLayoutWebix,
-      module: VueApp,
+      layout: "ExampleLayoutWebix/webix.layout",
+      module: "ExampleVue/vue.main",
       name: "Vue App",
       icon: "mdi-watch-import-variant",
       embed: {
         example: {
-          module: ExampleEmbed,
+          module: "ExampleEmbed/embed.module",
         },
       }
     },
     reactApp: {
-      layout: ExampleLayoutVue,
-      module: ReactApp,
+      layout: "ExampleLayoutVue/vue.layout",
+      module: "ExampleReact/react.main",
       name: "React App",
       icon: "fa-address-book",
     },
     notfound: {
-      layout: ExampleLayoutWebix,
-      module: Error404,
+      layout: "ExampleLayoutWebix/webix.layout",
+      module: "ExampleError404/error.main",
       name: "Not found page",
       icon: "fa-address-book",
     },
     globalwnd: {
       global: true,
-      module: ExampleGlobal,
+      module: "ExampleGLobal/global.module",
       name: "Not found page",
       icon: "fa-address-book",
     },
     globalnotification: {
       global: true,
-      module: ExampleNotification,
+      module: "ExampleNotification/notification.module",
       name: "Not found page",
       icon: "fa-address-book",
     },
