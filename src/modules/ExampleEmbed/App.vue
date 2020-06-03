@@ -22,13 +22,7 @@ export default {
   computed: {
     ...mapState({
       data: (state) => state.data,
-
     }),
-
-    vSelected: {
-      get() { return this.selected; },
-      set(value) { this.select(value); },
-    },
   },
   methods: {
     ...mapMutations(['setData']),

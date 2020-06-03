@@ -31,26 +31,28 @@ export default class RootModule extends Observable {
     this._urlState = {};
 
     // инициализируем глобальные модули
-    this._initGlobalModules();
+    this._initGlobalModules().then(() => {
+      // вызываем глобаьное событие popstate
+      this._eventHandler();
 
-    // вызываем глобаьное событие popstate
-    this._eventHandler();
+      // получаем массив с данными из url
+      const module = this._getModuleFromUrl(
+        this.$$config.historyApi ? document.location.pathname : document.location.hash,
+      );
 
-    // получаем массив с данными из url
-    const module = this._getModuleFromUrl(
-      this.$$config.historyApi ? document.location.pathname : document.location.hash,
-    );
+      // вызывам метод init для модуля root
+      this.init({
+        module,
+        path: this.$$config.historyApi ? document.location.pathname : document.location.hash,
+      });
 
-    // вызывам метод init для модуля root
-    this.init({
-      module,
-      path: this.$$config.historyApi ? document.location.pathname : document.location.hash,
-    });
-
-    // current module initialization
-    this._initModule({
-      module,
-      path: document.location.pathname,
+      // current module initialization
+      this._initModule({
+        module,
+        path: document.location.pathname,
+      });
+    }).catch((e) => {
+      console.error('Error init global module', e);
     });
   }
 
@@ -188,7 +190,14 @@ export default class RootModule extends Observable {
     // Вызываем диспатчеры для глобальных модулей
     Object.keys(this._modules)
       .filter((moduleName) => this._modules[moduleName].$$global)
-      .forEach((moduleName) => this._modules[moduleName].dispatcher(path, state));
+      .forEach((moduleName) => {
+        this._modules[moduleName].dispatcher(path, state);
+
+        // Встроенные модули
+        Object.keys(this._modules[moduleName].$$embed)
+          .forEach((name) => this._modules[moduleName].$$embed[name]
+            .dispatcher(path, state));
+      });
     // Если переход на новый макет то чистим модуль а потом макет
     if (this.$$currentModule.obj) {
       // Вызываем диспатчер для текущего модуля
@@ -215,10 +224,15 @@ export default class RootModule extends Observable {
     return url.split('/');
   }
 
-  _initGlobalModules() {
-    Object.keys(this.$$config.modules)
-      .filter((moduleName) => this.$$config.modules[moduleName].global)
-      .forEach((moduleName) => this._createModule(moduleName, this.$$config.modules[moduleName]));
+  _initGlobalModules = async () => {
+    const globalNames = Object.keys(this.$$config.modules)
+      .filter((moduleName) => this.$$config.modules[moduleName].global);
+
+    for (let i = 0; i < globalNames.length; i++) {
+      // eslint-disable-next-line
+      await this._createModule(globalNames[i], this.$$config.modules[globalNames[i]])
+      console.log('asdasasds');
+    }
   }
 
   /**
@@ -272,6 +286,11 @@ export default class RootModule extends Observable {
     // Если модуль глобальный - сразу его инициализируем
     if (this._modules[moduleName].$$global) {
       this._modules[moduleName].init(moduleName);
+
+      // Инициализируем встроенные модули
+      Object.keys(this._modules[moduleName].$$embed)
+        .forEach((name) => this._modules[moduleName].$$embed[name]
+          .init(moduleName));
     }
   }
 

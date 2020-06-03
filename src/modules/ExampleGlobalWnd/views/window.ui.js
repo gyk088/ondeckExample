@@ -25,7 +25,7 @@ export default class WindowGlobalUI {
         ],
       },
       body: {
-        template: 'GLobal Module',
+        template: '<div id="EmbedWnd"></div>',
       },
     };
   }

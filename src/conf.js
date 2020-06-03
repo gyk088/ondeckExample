@@ -55,6 +55,11 @@ export default {
       global: true,
       module: 'ExampleGlobalWnd',
       icon: 'fa-address-book',
+      embed: {
+        example: {
+          module: 'ExampleEmbedGlobal',
+        },
+      },
     },
     globalnotification: {
       global: true,
