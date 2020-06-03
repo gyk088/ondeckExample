@@ -6,15 +6,25 @@ import { Notify } from 'quasar';
  * module use Vue
  */
 export default class ExampleNotification extends Module {
-  dispatcher(module) {
+  init(path, state) {
+    console.log('init', this.constructor.name, path, state);
+  }
+
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+
     Notify.create({
       color: 'teal',
       position: 'top-right',
       timeout: 5000,
       textColor: 'white',
       actions: [{ icon: 'close', color: 'white' }],
-      message: `MODULE : ${module[0]}`,
+      message: `MODULE : ${path[0]}`,
     });
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   notify(text) {

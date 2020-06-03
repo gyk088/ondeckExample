@@ -53,14 +53,12 @@ export default {
     },
     globalwnd: {
       global: true,
-      module: 'ExampleGLobal',
-      name: 'Not found page',
+      module: 'ExampleGlobalWnd',
       icon: 'fa-address-book',
     },
     globalnotification: {
       global: true,
       module: 'ExampleNotification',
-      name: 'Not found page',
       icon: 'fa-address-book',
     },
   },

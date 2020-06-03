@@ -1,33 +1,31 @@
+import Observable from 'OneDeckCore/observ';
 /**
  * this is the parent class for the main application module.
  * родительсикй класс для главного модуля приложения
  */
-export default class RootMediator {
+export default class RootModule extends Observable {
   /**
    * this is constructor
    * конструктор
    * @param {Object} config  config object
    */
   constructor(config) {
+    super();
     // this object contains config object
     // конфиг, доступен в каждом модуле
     this.$$config = config;
-    // this object contains all modules
-    // объек содержит все модули приложения
-    this.$$modules = {};
-    // this object contains all layouts
-    // объек содержит все макеты приложения
-    this.$$layouts = {};
     // this object contains current module
     // объект с текущим модулем
     this.$$currentModule = {};
     // this object contains current layout
     // объект с текущим макетом
     this.$$currentLayout = {};
-
-    // this object contains all mediator events
-    // объект содержит все события медитора
-    this._channels = {};
+    // this object contains all modules
+    // объек содержит все модули приложения которые были инициализированы
+    this._modules = {};
+    // this object contains all layouts
+    // объек содержит все макеты приложения которые были инициализированы
+    this._layouts = {};
 
     // состояние по указоннму url (если не используем history api)
     this._urlState = {};
@@ -46,7 +44,7 @@ export default class RootMediator {
     // вызывам метод init для модуля root
     this.init({
       module,
-      path: document.location.pathname,
+      path: this.$$config.historyApi ? document.location.pathname : document.location.hash,
     });
 
     // current module initialization
@@ -88,20 +86,16 @@ export default class RootMediator {
   * в этом методе доступен объект currentModule
   * @abstract
   */
-  moduleMounted() { }
+  mounted() { }
 
   /**
-   * publish event
-   * @param {string} channel - event name.
-   * @param {Any} payload - event data.
+   * this method must be overridden by sub class.
+   * performs various actions depending on the argument
+   * @param {string} path - url.
+   * @param {Object} state - current state.
+   * @abstract
    */
-  $$publish(channel, payload) {
-    if (this._channels[channel]) {
-      this._channels[channel].forEach((cb) => cb(payload));
-    } else {
-      console.error('no such global event:', channel);
-    }
-  }
+  dispatcher() { }
 
   /**
    * @param {Object} routData - object contains url and state.
@@ -129,17 +123,6 @@ export default class RootMediator {
   }
 
   /**
-   * subscribe to an event
-   * @param {Object} module - module object.
-   * @param {string} channel - event name.
-   * @param {function} cb - callback function.
-   */
-  $$subscribe(channel, cb) {
-    if (!this._channels[channel]) this._channels[channel] = [];
-    this._channels[channel].push(cb);
-  }
-
-  /**
   * Called immediately after mounting
   * child module to the root module
   * The method must be overridden in the Root module.
@@ -148,7 +131,13 @@ export default class RootMediator {
   * в этом методе доступен объект currentModule
   */
   _mounted() {
-    this.moduleMounted();
+    this.mounted(this.$$currentModule, this.$$currentLayout);
+
+    Object.keys(this._modules)
+      .filter((moduleName) => this._modules[moduleName].$$global)
+      .forEach((moduleName) => this._modules[moduleName]
+        .mounted(this.$$currentModule, this.$$currentLayout));
+
     if (this.$$currentLayout.obj) {
       this.$$currentLayout.obj.mounted(this.$$currentModule, this.$$currentLayout);
     }
@@ -191,23 +180,22 @@ export default class RootMediator {
   /**
   * сurrent module dispatcher
   * вызываем диспатчер у текущего модуля
-  * @param {Array} module - url array
+  * @param {Array} path - url array
   * @param {Object} state - current state
   */
-  _dispatcherModule(module, state) {
+  _dispatcherModule(path, state) {
+    this.dispatcher(path, state);
+    // Вызываем диспатчеры для глобальных модулей
+    Object.keys(this._modules)
+      .filter((moduleName) => this._modules[moduleName].$$global)
+      .forEach((moduleName) => this._modules[moduleName].dispatcher(path, state));
     // Если переход на новый макет то чистим модуль а потом макет
     if (this.$$currentModule.obj) {
       // Вызываем диспатчер для текущего модуля
-      this.$$currentModule.obj.dispatcher(module, state);
+      this.$$currentModule.obj.dispatcher(path, state);
       // Вызываем диспатчеры для всторенных модулей
-      Object
-        .keys(this.$$currentModule.obj.$$embed)
-        .forEach((name) => this.$$currentModule.obj.$$embed[name].dispatcher(module, state));
-      // Вызываем диспатчеры для глобальных модулей
-      Object
-        .keys(this.$$modules)
-        .forEach((key) => this.$$modules[key].$$global && this.$$modules[key]
-          .dispatcher(module, state));
+      Object.keys(this.$$currentModule.obj.$$embed)
+        .forEach((name) => this.$$currentModule.obj.$$embed[name].dispatcher(path, state));
     }
   }
 
@@ -239,7 +227,7 @@ export default class RootMediator {
    */
   _createModule = async (moduleName, moduleConf) => {
     // Если уже подгрузили module - выходим
-    if (this.$$modules[moduleName]) return;
+    if (this._modules[moduleName]) return;
 
     let ModuleClass = await import(`../modules/${moduleConf.module}/module.js`);
     if (!ModuleClass || !ModuleClass.default) {
@@ -248,19 +236,19 @@ export default class RootMediator {
     ModuleClass = ModuleClass.default;
 
     // создаем модуль
-    this.$$modules[moduleName] = new ModuleClass();
+    this._modules[moduleName] = new ModuleClass();
     // глобальный модуль
-    this.$$modules[moduleName].$$global = moduleConf.global;
+    this._modules[moduleName].$$global = moduleConf.global;
     // добавляем метод rout для маршрутизации
-    this.$$modules[moduleName].$$rout = this.$$rout.bind(this);
+    this._modules[moduleName].$$rout = this.$$rout.bind(this);
     // добавляем метод  publish для публикации глобальных событий
-    this.$$modules[moduleName].$$publish = this.$$publish.bind(this);
+    this._modules[moduleName].$$gemit = this.$$emit.bind(this);
     // конфиг
-    this.$$modules[moduleName].$$config = this.$$config;
+    this._modules[moduleName].$$config = this.$$config;
     // макет модуля
-    this.$$modules[moduleName].$$layoutName = moduleConf.layout;
+    this._modules[moduleName].$$layoutName = moduleConf.layout;
     // встраиваемые модули
-    this.$$modules[moduleName].$$embed = {};
+    this._modules[moduleName].$$embed = {};
 
     if (moduleConf.embed) {
       const embedNames = Object.keys(moduleConf.embed);
@@ -274,16 +262,16 @@ export default class RootMediator {
         }
         EmbedClass = EmbedClass.default;
 
-        this.$$modules[moduleName].$$embed[embedNames[i]] = new EmbedClass();
-        this.$$modules[moduleName].$$embed[embedNames[i]].$$rout = this.$$rout.bind(this);
-        this.$$modules[moduleName].$$embed[embedNames[i]].$$publish = this.$$publish.bind(this);
-        this.$$modules[moduleName].$$embed[embedNames[i]].$$publish.$$config = this.$$config;
+        this._modules[moduleName].$$embed[embedNames[i]] = new EmbedClass();
+        this._modules[moduleName].$$embed[embedNames[i]].$$rout = this.$$rout.bind(this);
+        this._modules[moduleName].$$embed[embedNames[i]].$$gemit = this.$$emit.bind(this);
+        this._modules[moduleName].$$embed[embedNames[i]].$$config = this.$$config;
       }
     }
 
     // Если модуль глобальный - сразу его инициализируем
-    if (this.$$modules[moduleName].$$global) {
-      this.$$modules[moduleName].init(moduleName);
+    if (this._modules[moduleName].$$global) {
+      this._modules[moduleName].init(moduleName);
     }
   }
 
@@ -293,7 +281,7 @@ export default class RootMediator {
   */
   _createLayout = async (layoutName) => {
     // Если уже подгрузили layout - выходим
-    if (this.$$layouts[layoutName]) return;
+    if (this._layouts[layoutName]) return;
 
     let LayoutClass = await import(`../modules/${layoutName}/module.js`);
     if (!LayoutClass || !LayoutClass.default) {
@@ -302,13 +290,13 @@ export default class RootMediator {
     LayoutClass = LayoutClass.default;
 
     // создаем макет
-    this.$$layouts[layoutName] = new LayoutClass();
+    this._layouts[layoutName] = new LayoutClass();
     // добавляем метод rout для маршрутизации
-    this.$$layouts[layoutName].$$rout = this.$$rout.bind(this);
+    this._layouts[layoutName].$$rout = this.$$rout.bind(this);
     // добавляем метод  publish для публикации глобальных событий
-    this.$$layouts[layoutName].$$publish = this.$$publish.bind(this);
+    this._layouts[layoutName].$$gemit = this.$$emit.bind(this);
     // конфиг
-    this.$$layouts[layoutName].$$config = this.$$config;
+    this._layouts[layoutName].$$config = this.$$config;
   }
 
   /**
@@ -388,8 +376,8 @@ export default class RootMediator {
       }
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentLayout = {
-        name: mudules.layout,
-        obj: this.$$layouts[mudules[moduleName].layout],
+        name: mudules[moduleName].layout,
+        obj: this._layouts[mudules[moduleName].layout],
       };
 
       // Инициализируем новый макет (вызываем метод init)
@@ -421,7 +409,7 @@ export default class RootMediator {
       // Cохраняем новый модуль в объекте currentModule
       this.$$currentModule = {
         name: moduleName,
-        obj: this.$$modules[moduleName],
+        obj: this._modules[moduleName],
       };
 
       // Инициализируем новый модуль (вызываем метод init)
@@ -442,9 +430,6 @@ export default class RootMediator {
         moduleData.path,
       );
     }
-
-    // Cохраняем новый модуль в объекте currentModule текущего макета
-    this.$$currentLayout.obj.$$currentModule = this.$$currentModule;
 
     // Вызываем методы жизненого цикла
     this._mounted();

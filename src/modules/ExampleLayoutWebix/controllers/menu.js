@@ -3,13 +3,14 @@
  */
 import Observable from 'OneDeckCore/observ';
 import * as webix from 'webix';
-import RootMenuUI from 'ExampleLayoutWebix/views/root.menu.ui';
+import MenuUI from 'ExampleLayoutWebix/views/menu.ui';
+import Module from 'ExampleLayoutWebix/module';
 
-export default class RootMenu extends Observable {
-  constructor(config) {
+export default class Menu extends Observable {
+  constructor() {
     super();
-    this.config = config;
-    this.ui = new RootMenuUI();
+
+    this.ui = new MenuUI();
     this.id = this.ui.id;
     this.app = webix.ui(this.ui);
     this.eventHandler();
@@ -19,7 +20,7 @@ export default class RootMenu extends Observable {
   eventHandler() {
     $$(`${this.id}List`).attachEvent('onAfterSelect', (key) => {
       $$(this.id).hide();
-      this.$emit('initModule', {
+      this.$$emit('initModule', {
         url: `/${key}`,
         state: null,
       });
@@ -28,14 +29,15 @@ export default class RootMenu extends Observable {
 
   createMenu() {
     const menu = [];
-    Object.keys(this.config.modules).forEach((key) => {
-      const module = this.config.modules[key];
-      if (!module.global) {
+    const module = new Module();
+    Object.keys(module.$$config.modules).forEach((key) => {
+      const menuItem = module.$$config.modules[key];
+      if (!menuItem.global) {
         menu.push({
           id: key,
-          value: module.name,
-          icon: module.icon,
-          class: module.class,
+          value: menuItem.name,
+          icon: menuItem.icon,
+          class: menuItem.class,
         });
       }
     });

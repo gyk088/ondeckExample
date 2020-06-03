@@ -6,8 +6,8 @@ import Vue from 'vue';
 import Module from 'OneDeckCore/module';
 
 export default class ExampleLayoutVue extends Module {
-  init() {
-    VueApp.data.config = this.$$config;
+  init(path, state) {
+    console.log('init', this.constructor.name, path, state);
     this.VueApp = new Vue(VueApp);
 
     this.eventHandler();
@@ -19,7 +19,15 @@ export default class ExampleLayoutVue extends Module {
       state: data.state,
     }));
 
-    this.VueApp.$on('showGlobalWnd', () => this.$$publish('showGlobalWnd'));
+    this.VueApp.$on('showGlobalWnd', () => this.$$gemit('showGlobalWnd'));
+  }
+
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   destroy() {

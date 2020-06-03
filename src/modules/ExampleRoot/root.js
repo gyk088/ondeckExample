@@ -6,9 +6,13 @@ import 'webix/skins/mini.min.css';
 import * as webix from 'webix';
 import RootModule from 'OneDeckCore/root.module';
 import axios from 'axios';
+import ExampleNotification from 'ExampleNotification/module';
+import ExampleGlobalWnd from 'ExampleGlobalWnd/module';
 
 export default class Root extends RootModule {
-  init() {
+  init(initObj) {
+    console.log('init', this.constructor.name, initObj);
+
     this.eventHandler();
   }
 
@@ -20,22 +24,27 @@ export default class Root extends RootModule {
       return Promise.reject(error);
     });
 
-    this.$$subscribe('examplEvent', (exampleData) => {
+    this.$$on('examplEvent', (exampleData) => {
       this.exampleAction(exampleData);
-      this.$$modules.globalwnd.show();
     });
 
-    this.$$subscribe('showGlobalWnd', () => {
-      this.$$modules.globalwnd.show();
+    this.$$on('showGlobalWnd', () => {
+      const wnd = new ExampleGlobalWnd();
+      wnd.show();
     });
 
-    this.$$subscribe('notify', (text) => {
-      this.$$modules.globalnotification.notify(text);
+    this.$$on('notify', (text) => {
+      const notifyObj = new ExampleNotification();
+      notifyObj.notify(text);
     });
   }
 
-  moduleMounted() {
-    console.log(this.$$currentModule);
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   exampleAction(exampleData) {
@@ -45,9 +54,6 @@ export default class Root extends RootModule {
       cancel: 'No',
       type: 'confirm-error',
       text: `exampleData: ${exampleData}`,
-      callback: (result) => {
-        if (result) console.log('OK');
-      },
     });
   }
 

@@ -7,18 +7,27 @@ import Vue from 'vue';
  * module use Vue
  */
 export default class ExampleEmbed extends Module {
-  init() {
+  init(path, state) {
+    console.log('init', this.constructor.name, path, state);
+
     this.VueApp = new Vue(App);
     this.eventHandler();
   }
 
   eventHandler() {
-    this.VueApp.$on('notify', () => this.$$publish('notify', `EMBED: ${this.moduleName}`));
+    this.VueApp.$on('notify', () => this.$$gemit('notify', `EMBED: ${this.moduleName}`));
   }
 
-  dispatcher(module) {
-    [this.moduleName] = module;
+
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+
+    [this.moduleName] = path;
     this.VueApp.setData(this.moduleName);
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   destroy() {

@@ -7,7 +7,7 @@ import Module from 'OneDeckCore/module';
  */
 export default class ExampleVue extends Module {
   init(path, state) {
-    console.log(path, state);
+    console.log('init', this.constructor.name, path, state);
 
     this.VueApp = new Vue(VueApp);
 
@@ -19,6 +19,14 @@ export default class ExampleVue extends Module {
       path: `/main/item/${row[0].id}`,
       state: row[0],
     }));
+  }
+
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   destroy() {

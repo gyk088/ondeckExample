@@ -8,7 +8,7 @@ export default class Observable {
    * @param {string} channel - event name.
    * @param {function} cb - callback function.
    */
-  $on(channel, cb) {
+  $$on(channel, cb) {
     if (!this.listeners[channel]) {
       this.listeners[channel] = {};
       this.listeners[channel].eventProperty = {};
@@ -23,7 +23,7 @@ export default class Observable {
    * @param {string} channel - event name.
    * @param {function} cb - callback function.
    */
-  $onOnce(channel, cb) {
+  $$onOnce(channel, cb) {
     this.on(channel, cb);
     this.listeners[channel].eventProperty.isOnOnce = true;
   }
@@ -33,7 +33,7 @@ export default class Observable {
    * @param {string} channel - event name.
    * @param {function} cb - callback function.
    */
-  $off(channel, cb) {
+  $$off(channel, cb) {
     this.listeners[channel].data = this.listeners[channel].data.filter(
       (listener) => listener !== cb,
     );
@@ -44,7 +44,7 @@ export default class Observable {
    * @param {string} channel - event name.
    * @param {Object} data - evetn data.
    */
-  $emit(channel, data) {
+  $$emit(channel, data) {
     if (!this.listeners[channel] || !this.listeners[channel].data) {
       console.error('No such event:', channel);
       return;
@@ -52,7 +52,7 @@ export default class Observable {
 
     this.listeners[channel].data.forEach((listener) => {
       if (this.listeners[channel].eventProperty.isOnOnce) {
-        this.$off(channel, this.listeners[channel].data[0]);
+        this.$$off(channel, this.listeners[channel].data[0]);
       }
       listener(data);
     });
@@ -64,9 +64,9 @@ export default class Observable {
    */
   install(extendObj) {
     extendObj.listeners = this.listeners;
-    extendObj.$on = this.$on;
-    extendObj.$off = this.$off;
-    extendObj.$onOnce = this.$onOnce;
-    extendObj.$emit = this.$emit;
+    extendObj.$$on = this.$$on;
+    extendObj.$$off = this.$$off;
+    extendObj.$$onOnce = this.$$onOnce;
+    extendObj.$$emit = this.$$emit;
   }
 }

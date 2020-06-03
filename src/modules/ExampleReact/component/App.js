@@ -1,8 +1,10 @@
 import React from 'react';
+import Module from 'ExampleReact/module';
 import Display from './Display';
 import ButtonPanel from './ButtonPanel';
 import calculate from '../logic/calculate';
 import './App.css';
+
 
 export default class App extends React.Component {
   state = {
@@ -12,12 +14,13 @@ export default class App extends React.Component {
   }
 
   handleClick = (buttonName) => {
+    const module = new Module();
     this.setState(calculate(this.state, buttonName));
-    if (buttonName === '=') {
-      this.$emit('onSumm', calculate(this.state, buttonName).total);
+    if (buttonName === '=' && this.state.total) {
+      module.$$emit('onSumm', this.state.total);
     }
 
-    this.$emit('notify', buttonName);
+    module.$$emit('notify', buttonName);
   }
 
   render() {

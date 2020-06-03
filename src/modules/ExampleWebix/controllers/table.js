@@ -22,7 +22,7 @@ export default class Table extends Observable {
   }
 
   eventHandler() {
-    $$(this.id).attachEvent('onAfterSelect', (id) => this.$emit('onClickRow', $$(this.id).getItem(id.row)));
+    $$(this.id).attachEvent('onAfterSelect', (id) => this.$$emit('onClickRow', $$(this.id).getItem(id.row)));
   }
 
   loadData() {

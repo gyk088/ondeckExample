@@ -3,7 +3,7 @@
  */
 import Observable from 'OneDeckCore/observ';
 import * as webix from 'webix';
-import WindowGlobalUI from 'ExampleGLobal/views/window.ui';
+import WindowGlobalUI from 'ExampleGlobalWnd/views/window.ui';
 
 export default class WindowGlobal extends Observable {
   constructor() {

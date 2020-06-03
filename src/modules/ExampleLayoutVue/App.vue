@@ -65,17 +65,20 @@
 </template>
 
 <script>
+import Module from 'ExampleLayoutVue/module';
+
 export default {
   el: '#ROOT',
   name: 'ExampleVueRoot',
   data() {
     return {
       left: false,
-      config: undefined,
+      config: {},
     };
   },
-  mounted() {
-    console.log(this.config);
+  created() {
+    const module = new Module();
+    this.config = module.$$config;
   },
   methods: {
     rout(url, state) {

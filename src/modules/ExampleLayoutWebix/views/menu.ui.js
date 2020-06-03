@@ -1,9 +1,9 @@
 /**
  * Class RootMenuUI
  */
-export default class RootMenuUI {
+export default class MenuUI {
   constructor() {
-    this.id = 'RootMenu';
+    this.id = 'Menu';
     return this.ui();
   }
 
@@ -29,7 +29,7 @@ export default class RootMenuUI {
       width: 200,
       position: 'left',
       state: (state) => {
-        const toolbarHeight = $$('RootContentToolbar').$height;
+        const toolbarHeight = $$('ContentToolbar').$height;
         state.top = toolbarHeight;
         state.height -= toolbarHeight;
       },

@@ -8,7 +8,7 @@ import Vue from 'vue';
  */
 export default class ExampleError404 extends Module {
   init(path, state) {
-    console.log(path, state);
+    console.log('init', this.constructor.name, path, state);
     this.VueApp = new Vue(App);
     this.eventHandler();
   }
@@ -18,6 +18,14 @@ export default class ExampleError404 extends Module {
       path: '/main/',
       state: null,
     }));
+  }
+
+  dispatcher(path, state) {
+    console.log('dispatcher', this.constructor.name, path, state);
+  }
+
+  mounted(module, layout) {
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   destroy() {

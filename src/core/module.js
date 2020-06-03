@@ -1,8 +1,29 @@
+import Observable from 'OneDeckCore/observ';
 /**
  * this class implements an interface for the base class of the module
- * @interface
+ * Реализует патерн одинчка (singleton)
+ * @abstract
  */
-export default class Module {
+export default class Module extends Observable {
+  /**
+   * this is constructor
+   * конструктор
+   */
+  constructor() {
+    super();
+    /**
+     * Объект содержит в себе инстансы всех моулей
+     * Модуль создается только 1 раз
+     */
+    Module.instances = Module.instances || {};
+
+    if (Module.instances[this.constructor.name]) {
+      return Module.instances[this.constructor.name];
+    }
+
+    Module.instances[this.constructor.name] = this;
+  }
+
   /**
    * this method must be overridden by sub class.
    * should contain all events

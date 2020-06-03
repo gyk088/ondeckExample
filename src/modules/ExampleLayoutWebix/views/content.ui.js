@@ -1,9 +1,9 @@
 /**
- * Class RootContentUI
+ * Class ContentUI
  */
-export default class RootContentUI {
+export default class ContentUI {
   constructor() {
-    this.id = 'RootContent';
+    this.id = 'Content';
     return this.ui();
   }
 
