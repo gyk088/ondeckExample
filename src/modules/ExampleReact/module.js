@@ -4,15 +4,15 @@ import ReactDOM from 'react-dom';
 import App from 'ExampleReact/component/App';
 import 'ExampleReact/index.css';
 import 'github-fork-ribbon-css/gh-fork-ribbon.css';
-import Module from 'OneDeckCore/module';
+import Onedeck from 'onedeck';
 import axios from 'axios';
 
 /**
  * Class ExampleReact
  * module use React
  */
-export default class ExampleReact extends Module {
-  init(path, state) {
+export default class ExampleReact extends Onedeck.Module {
+  init (path, state) {
     console.log('init', this.constructor.name, path, state);
 
     this.reactApp = ReactDOM.render(
@@ -25,20 +25,21 @@ export default class ExampleReact extends Module {
     this.eventHandler();
   }
 
-  eventHandler() {
+  eventHandler () {
     this.$$on('onSumm', (summ) => this.$$gemit('examplEvent', summ));
     this.$$on('notify', (btnmane) => this.$$gemit('notify', btnmane));
   }
 
-  dispatcher(path, state) {
+  dispatcher (path, state) {
     console.log('dispatcher', this.constructor.name, path, state);
   }
 
-  mounted(module, layout) {
+  mounted (module, layout) {
     console.log('mounted', this.constructor.name, module, layout);
   }
 
-  destroy() {
+  destroy () {
+    this.$$offAll()
     ReactDOM.unmountComponentAtNode(document.getElementById('MainContent'));
   }
 }

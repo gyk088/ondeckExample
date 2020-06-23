@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Module from 'ExampleEmbed/module';
 
 Vue.use(Vuex);
 
@@ -10,7 +11,9 @@ const defaultState = () => ({
 export default new Vuex.Store({
   state: defaultState(),
   mutations: {
-    setData(state, str) {
+    setData (state, str) {
+      module = new Module()
+      module.$$emit('notify', `${state.data} + ${str}`)
       Vue.set(state, 'data', `${state.data} + ${str}`);
     },
   },

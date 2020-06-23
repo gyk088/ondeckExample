@@ -1,7 +1,7 @@
 <template>
   <div
     id="Embed"
-    @click="$emit('notify')"
+    @click="notify"
   >
     <div class="embed-block">
       <q-parallax src="https://cdn.quasar.dev/img/parallax2.jpg">
@@ -14,6 +14,7 @@
 <script>
 import store from 'ExampleEmbed/store';
 import { mapState, mapMutations } from 'vuex';
+import Module from 'ExampleEmbed/module';
 
 export default {
   el: '#Embed',
@@ -26,6 +27,10 @@ export default {
   },
   methods: {
     ...mapMutations(['setData']),
+    notify() {
+      const module = new Module()
+      module.$$emit('notify', this.data)
+    }
   },
 };
 </script>

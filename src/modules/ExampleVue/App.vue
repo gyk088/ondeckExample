@@ -17,6 +17,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import store from 'ExampleVue/store';
+import Module from 'ExampleVue/module';
 
 export default {
   el: '#MainContent',
@@ -38,7 +39,8 @@ export default {
     ...mapMutations(['select']),
 
     getSelectedString() {
-      this.$emit('onRowClick', this.selected);
+      module = new Module()
+      module.$$emit('onRowClick', this.selected);
     },
   },
 };

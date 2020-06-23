@@ -137,7 +137,6 @@ module.exports = {
   resolve: {
     alias: {
       Images: PATHS.images,
-      OneDeckCore: PATHS.core,
       ...modules,
     }
   },

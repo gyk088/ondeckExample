@@ -2,10 +2,10 @@
  * controller for CatalogTableUI
  */
 import * as webix from 'webix';
-import Observable from 'OneDeckCore/observ';
+import Onedeck from 'onedeck';
 import TableUI from 'ExampleWebix/views/table.ui';
 
-export default class Table extends Observable {
+export default class Table extends Onedeck.Observable {
   constructor() {
     super();
 
@@ -17,19 +17,19 @@ export default class Table extends Observable {
     this.loadData();
   }
 
-  destroy() {
+  destroy () {
     this.app.destructor();
   }
 
-  eventHandler() {
+  eventHandler () {
     $$(this.id).attachEvent('onAfterSelect', (id) => this.$$emit('onClickRow', $$(this.id).getItem(id.row)));
   }
 
-  loadData() {
+  loadData () {
     $$(this.id).parse(this.exampleData());
   }
 
-  exampleData() {
+  exampleData () {
     return [
       {
         id: '1',

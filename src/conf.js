@@ -11,6 +11,7 @@ export default {
   rootModule: ExampleRoot,
   mainModule: 'main',
   module404: 'notfound',
+  import: async (module) => await import(`./modules/${module}/module`),
   modules: {
     auth: {
       module: 'ExampleAuth',

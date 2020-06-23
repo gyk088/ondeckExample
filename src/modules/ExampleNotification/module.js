@@ -1,16 +1,16 @@
-import Module from 'OneDeckCore/module';
+import Onedeck from 'onedeck';
 import { Notify } from 'quasar';
 
 /**
  * Class ExampleNotification
  * module use Vue
  */
-export default class ExampleNotification extends Module {
-  init(path, state) {
+export default class ExampleNotification extends Onedeck.Module {
+  init (path, state) {
     console.log('init', this.constructor.name, path, state);
   }
 
-  dispatcher(path, state) {
+  dispatcher (path, state) {
     console.log('dispatcher', this.constructor.name, path, state);
 
     Notify.create({
@@ -23,11 +23,11 @@ export default class ExampleNotification extends Module {
     });
   }
 
-  mounted(module, layout) {
+  mounted (module, layout) {
     console.log('mounted', this.constructor.name, module, layout);
   }
 
-  notify(text) {
+  notify (text) {
     Notify.create({
       position: 'top',
       timeout: 500,

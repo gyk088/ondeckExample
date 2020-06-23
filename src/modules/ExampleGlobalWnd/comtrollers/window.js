@@ -1,11 +1,11 @@
 /**
  * controller for WindowGlobal
  */
-import Observable from 'OneDeckCore/observ';
+import Onedeck from 'onedeck';
 import * as webix from 'webix';
 import WindowGlobalUI from 'ExampleGlobalWnd/views/window.ui';
 
-export default class WindowGlobal extends Observable {
+export default class WindowGlobal extends Onedeck.Observable {
   constructor() {
     super();
 
@@ -15,16 +15,16 @@ export default class WindowGlobal extends Observable {
     this.eventHandler();
   }
 
-  eventHandler() {
+  eventHandler () {
     $$(`${this.id}BtnClose`).attachEvent('onItemClick', () => this.hide());
   }
 
 
-  show() {
+  show () {
     this.app.show();
   }
 
-  hide() {
+  hide () {
     this.app.hide();
   }
 }

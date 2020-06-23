@@ -31,20 +31,21 @@
     |-- dist
     |-- node_modules
     |-- src
-    |   |-- core
-    |   |   |--helpers.js
-    |   |   |--module.js
-    |   |   |--observ.js
-    |   |   |--root.module.js
     |   |-- images
     |   |   |--index.js
     |   |-- modules
-    |   |   |--exampleAuth
-    |   |   |--exampleReact
-    |   |   |--exampleRootVue
-    |   |   |--exampleRootWebix
-    |   |   |--exampleVue
-    |   |   |--exampleWebix
+    |   |   |--ExampleAuth
+    |   |   |--ExampleEmbed
+    |   |   |--ExampleEmbedGlobal
+    |   |   |--ExampleError404
+    |   |   |--ExampleGlobalWnd
+    |   |   |--ExampleLayoutVue
+    |   |   |--ExampleLayoutWebix
+    |   |   |--ExampleNotification
+    |   |   |--ExampleReact
+    |   |   |--ExampleRoot
+    |   |   |--ExampleVue
+    |   |   |--ExampleWebix
     |   |-- config.js
     |   |-- quasar.config.js
     |   |-- index.html
@@ -62,345 +63,24 @@
 - **src/images** - файлы с расширением png|jpeg|jpg|svg
 - **src/modules** - модули приложения
 - **src/modules/exampleAuth** - пример модуля для авторизации (Vue)
-- **src/modules/exampleReact** - пример модуля на React
-- **src/modules/exampleRootVue** - пример root модуля на Vue
-- **src/modules/exampleRootWebix** - пример root модуля на Webix
-- **src/modules/exampleVue** - пример модуля на Vue
-- **src/modules/exampleWebix** - пример модуля на Webix
+- **src/modules/ExampleEmbed** - пример встраиваемого модуля (Vue)
+- **src/modules/ExampleEmbedGlobal** - пример встраиваемого модуля в глобальный модуль (Vue)
+- **src/modules/ExampleError404** - пример модуля 404 (Vue)
+- **src/modules/ExampleGlobalWnd** - пример модуля глобального окна (Webix)
+- **src/modules/ExampleLayoutVue** - пример модуля Layout (Vue)
+- **src/modules/ExampleLayoutWebix** - пример модуля Layout (Webix)
+- **src/modules/ExampleNotification** - пример глобального модуля для уведомлений (Vue)
+- **src/modules/ExampleReact** - пример модуля на React
+- **src/modules/ExampleRoot** - пример Root моудля
+- **src/modules/ExampleVue** - пример модуля на Vue
+- **src/modules/ExampleWebix** - пример модуля на Webix
 - **src/config.js** - глобальный конфиг приложения
 - **src/quasar.config.js** - конфиг для Quasar
 - **src/index.html** - главный html шаблон
 - **src/index.js** - точка входа
 
-## Модули
-
-Модуль (в контексте данной архитектуры) - это объект которы содержит в себе отдельное веб приложение. Отдельное веб приложение можно собрать вне проекта, при этом внести минимальные правки в код. Модули могут общаться друг с другом при помощи роутинга (метод $$rout), или при помощи пользовательских событий (метод $$publish)
-
-### Главный модуль Root
-
-Модуль Root - это главный модуль всего приложения, он должен быть наследником класса RootMediator (core/root.module.js). Этот класс реализует паттерн [Посредник][mediator]. Он определяет интерфейс для обмена информацией между модулями.
-
-### Модуль
-
-Модуль приложения является оберткой для отдельного веб приложения. Должен быть наследником обстрактного класса Module (core/module.js).
-
-## Пример реализации веб приложения с использованием модульной архитектуры
-
-### Точка входа src/index.js
-
-```
-import "Images"
-import Config from "./conf"
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.info("version: ", Config.version)
-  new Config.rootModule(Config)
-})
-```
-
-В этом примере реализована простейшая авторизация.
-
-### Config src/conf.js
-
-Config - это файл с настройками нашего приложения. Он подключает все модули приложения, и дополнительные настройки по необходимости.
-В примере мы вызываем настройки для [Quasar][quasar] с помощью функции `QuasarConfif()`.
-
-```
-import QuasarConfif from "./quasar.config"
-import WebixApp from "ExampleWebix/webix.main"
-import VueApp from "ExampleVue/vue.main"
-import ReactApp from "ExampleReact/react.main"
-import ExampleRoot from "ExampleRoot/root.main"
-import ExampleAuth from "ExampleAuth/auth.main"
-import ExampleLayoutVue from "ExampleLayoutVue/vue.layout"
-import ExampleLayoutWebix from "ExampleLayoutWebix/webix.layout"
-
-QuasarConfif()
-
-export default {
-  historyApi: false,
-  apiUrl: API_PREFIX,
-  version: VERSION,
-  rootPath: ROOT_PATH, // корневой путь для приложения
-  rootModule: ExampleRoot,
-  mainModule: 'main',
-  modules: {
-    auth: {
-      module: ExampleAuth,
-      name: "auth",
-      icon: "fa-camera",
-    },
-    main: {
-      layout: ExampleLayoutVue,
-      module: window.innerWidth < 1300 ? VueApp : WebixApp,
-      name: "webixApp",
-      icon: "fa-camera",
-    },
-    vueApp: {
-      layout: ExampleLayoutWebix,
-      module: VueApp,
-      name: "vueApp",
-      icon: "mdi-watch-import-variant",
-    },
-    reactApp: {
-      layout: ExampleLayoutWebix,
-      module: ReactApp,
-      name: "reactApp",
-      icon: "fa-address-book",
-    }
-  }
-}
-
-```
-`rootModule: RootMediator`: (обязательный параметр) модуль контейнер, содержит в себе все модули приложения, потомок класса `RootMediator`;
-
-`mainModule: String`: (обязательный параметр) главный модуль, (главный экран);
-
-`historyApi: Bool`: (необязательный параметр) true - использовать в приложении history api;
-
-`apiUrl: String`: (необязательный параметр) урл для обращения к API;
-
-`version: String`: (необязательный параметр) версия приложения `version:  2.0.1 rev. 407d63e`;
-
-`rootPath: String`: (необязательный параметр) путь к приложению, необязательный параметр. Если наше приложение стартует от пути `http://localhost:3000/test/path/` - в `rootPath` необходимо указать `/test/path/`;
-
-Объект `modules` содержит в себе объекты с настройками для каждого модуля. Ключем каждого объекта является название модуля, которе используется при роутинге. Например если мы находимся в модуле `vueApp` url будет соответствовать `http://localhost:9001/vueApp`
-
-Объект `modules` содержит  модули:
-
-`module: Module` - (обязательный параметр) объект моудля;
-
-`layout: Module` - (необязательный параметр) объект макета (layout) в который монтируется модуль;
-
-`name: String` - (необязательный параметр) название для меню;
-
-`icon: String` - (необязательный параметр) иконка для меню;
-
-В зависимости от различных параметров `module: window.innerWidth < 1300 ? VueApp : WebixApp` мы можем использовать различные реализации модулей.
-
-Так-же конфиг может иметь любые параметры, необоходимые для реализации приложения.
-
-Объект конфига доступен во всех моудлях `this.$$config`
-
-### Пример модуля
-
-```
-import React from "react"
-import ReactDOM from "react-dom"
-import App from "ExampleReact/component/App"
-import "ExampleReact/index.css"
-import "github-fork-ribbon-css/gh-fork-ribbon.css"
-import Module from "OneDeckCore/module"
-import Observable from "OneDeckCore/observ"
-import axios from "axios"
-
-/**
- * Class ExampleReact
- * module use React
- */
-export default class ExampleReact extends Module {
-  init(path, state) {
-    console.log(path, state)
-
-    this.reactApp = ReactDOM.render(
-      <App />,
-      document.getElementById("MainContent")
-    )
-
-    let observ = new Observable()
-    observ.install(this.reactApp)
-
-    this.eventHandler()
-  }
-
-  eventHandler() {
-    this.reactApp.$on("onSumm", summ => this.$$publish("examplEvent", summ))
-  }
-
-  destroy() {
-    ReactDOM.unmountComponentAtNode(document.getElementById("MainContent"))
-  }
-}
-```
-
-Каждый модуль (кроме авторизации) содержит в себе следущие методы:
-
-`init(path, state)` - инициализация модуля и вызов метода `eventHandler()`. Метод принимает два параметра:
-
-`path` - урл при инициализации модуля;
-
-`state` - данные которые передали при инициализации данного модуля;
-
-`eventHandler()` - обработчик событий, содрежит в себе события уровня модуля, вызывается из метода `init()`;
-
-`destroy()` - деструктор модуля. Чистит DOM дерево, отписывается от событий уровня модуля;
-
-Каждый модуль может вызвать метод `this.$$rout` - для роутинга и `this.$$publish` - для публикации события.
-
-`this.$$rout({path, state})` - перейти на указанный урл `path` и передать данные `state`:
-
-`obj.path` - урл вида `/module_name/item/1` первый элемент урла должен быть названием модуля, остальные элементы в произвольной форме;
-
-`state` - объект с данными которые мы передаем по указанному урлу;
-
-`this.$$publish(eventName, eventData)` - вызвать пользовательское событие eventName и передать в него данные eventData:
-
-`eventName` - название события;
-
-`eventData` - данные события;
-
-В данном примере для реализации модуля мы используем библиотеку [React][react]. Так как классовый [React][react] компонент не реализует паттерн [Наблюдатель][observer], мы добавляем в него данную функциональность `observ.install(this.reactApp)`.
-
-Методы класса Observable `src/core/observ.js
-
-`$on(channel, cb)` - подписаться на событие:
-
-`channel` - название события;
-
-`cb` - коллбэк функция для обработки события;
-
-`$onOnce(channel, cb)` - подписаться на событие, событие сработает один раз:
-
-`channel` - название события;
-
-`cb` - коллбэк функция для обработки события;
-
-`$off(channel, cb)` - отписаться от события:
-
-`channel` - название события;
-
-`cb` - коллбэк функция;
-
-`$emit(channel, data)` - публикация события:
-
-`channel` - название события;
-
-`data` - данные события;
-
-`install(obj)` - установить в объект паттерн [Наблюдатель][observer]:
-
-`obj` - объект для которго необходимо установить паттерн [Наблюдатель][observer];
-
-### Пример модуля Root
-
-```
-/**
- * Class Root
- */
-import VueApp from "ExampleRootVue/App.vue"
-import Vue from "vue"
-import RootModule from "OneDeckCore/root.module"
-import axios from "axios"
-
-export default class Root extends RootModule {
-  init() {
-    VueApp.data.config = this.$$config
-    this.VueApp = new Vue(VueApp)
-
-    this.eventHandler()
-  }
-
-  eventHandler() {
-    axios.interceptors.response.use(undefined, error => {
-      this.ajaxError(error.response.data)
-      return Promise.reject(error)
-    })
-
-    this.VueApp.$on("rout", data =>
-      this.$$rout({
-        path: data.url,
-        state: data.state
-      })
-    )
-
-    this.$$subscribe(this.$$modules.reactApp, "examplEvent", exampleData => {
-      this.exampleAction(exampleData)
-    })
-  }
-
-  exampleAction(exampleData) {
-    console.log(exampleData)
-  }
-
-  ajaxError(error) {
-    console.log(error)
-  }
-}
-```
-
-Модуль Root - Глобальный модуль всего приложения, содержит в себе глобальные события, например событие ошибки при ajax запросе `{axios.interceptors.response.use}`. Является медиатором (посредником), общение остальных модулей происходит через данный модуль. В нем мы можем подписывать остальные модули на глобальные пользовательсике события с помощь методоа `{this.$$subscribe}`. В Root модуле нет метода `destroy()`.
-
-`this.$$subscribe(moduleObj, eventName, cb)` - подписать модуль на пользовательское событие.
-
-`moduleObj` - объект модуля;
-
-`eventName` - название события;
-
-`cb` - коллбэк функция для обработки события;
-
-`this.$$modules` - объек с модулями.
-
-### Пример модуля Auth (авторизации)
-
-```
-import Module from "OneDeckCore/module"
-import App from "ExampleAuth/App.vue"
-import Vue from "vue"
-
-/**
- * Class ExampleAuth
- * module use Vue
- */
-export default class ExampleAuth extends Module {
-  constructor() {
-    super()
-    this.VueApp = new Vue(App)
-  }
-}
-```
-
-Модуль auth в простейшей реализации содержит в себе только конструктор, в котором происходит инициализация приложения для авторизации.
-
-## Роутинг
-
-Можно использовать [html5 history api][rout] - для этого в конфиге нужно указать `historyApi: true`.
-
-Каждый модуль содержит метод `$$rout({path, state})`. Первым элементом урл адреса всегда явлется название модуля (ключ объекта modules в конфиге).
-
-`this.$$rout({path, state})` - перейти на указанный урл `path` и передать данные `state`:
-
-`obj.path` - урл вида `/module_name/item/1` первый элемент урла должен быть названием модуля, остальные элементы в произвольной форме;
-
-`state` - объект с данными которые мы передаем по указанному урлу;
-
-**ROOT_PATH**
-
-Корневой путь для приложения задается в конфиге поле `rootPath`.
-Пример если мы настроили наше наше приложнеи на url `http://my.com/test/path/` , нам необходимо указать в поле rootPath путь `/test/path/`.
-Если наше приложение стартует из `http://my.com` rootPath не указываем, либо указываем просто как пустая строка.
-
-**Переход на новый модуль:**
-
-1. Вызываем в текущем модуле метод `destroy()`
-
-2. Вызываем в новом модуле метод `init(path, state)`:
-
-   `path` - текущий урл
-
-   `state` - объект с данными который передали при переходе
-
-**Переход в текущем модуле:**
-
-1. Вызываем в текущем модуле метод `dispatcher(path, state)`:
-
-   `path` - текущий урл
-
-   `state` - объект с данными который передали при переходе
 
 [webix]: https://webix.com/
 [vue]: https://vuejs.org/
 [quasar]: https://quasar.dev/
 [react]: https://reactjs.org/
-[mediator]: https://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
-[observer]: https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D0%B1%D0%BB%D1%8E%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C_(%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
-[rout]: https://developer.mozilla.org/ru/docs/Web/API/History_API

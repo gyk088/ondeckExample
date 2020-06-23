@@ -1,9 +1,12 @@
 {
-  "name": "onedeck",
-  "version": "3.0.1",
+  "name": "onedeckExample",
+  "version": "0.1.0",
   "description": "onedeck",
   "main": "index.js",
-  "repository": "https://gyk007@bitbucket.org/gyk007/onedeck.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gyk007@bitbucket.org/gyk007/onedeck.git"
+  },
   "author": "gyk088@gmail.com",
   "license": "MIT",
   "scripts": {
@@ -21,6 +24,7 @@
     "big.js": "^5.2.2",
     "bootstrap-vue": "^2.0.0-rc.28",
     "github-fork-ribbon-css": "^0.2.1",
+    "onedeck": "^0.1.8",
     "prop-types": "^15.7.2",
     "quasar": "^1.1.0",
     "react": "^16.8.6",
@@ -74,5 +78,15 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
     "webpack-md5-hash": "0.0.6"
-  }
+  },
+  "homepage": "https://bitbucket.org/gyk007/onedeck#readme",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [
+    "microservices",
+    "frontend",
+    "modules",
+    "ondeck"
+  ]
 }

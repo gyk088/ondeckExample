@@ -5,12 +5,12 @@ import 'webix/webix.css';
 import 'webix/skins/mini.min.css';
 import Content from 'ExampleLayoutWebix/controllers/content';
 import Menu from 'ExampleLayoutWebix/controllers/menu';
-import Module from 'OneDeckCore/module';
+import Onedeck from 'onedeck';
 
 import 'ExampleLayoutWebix/scss/main.scss';
 
-export default class ExampleLayoutWebix extends Module {
-  init(path, state) {
+export default class ExampleLayoutWebix extends Onedeck.Module {
+  init (path, state) {
     console.log('init', this.constructor.name, path, state);
 
     this.Content = new Content();
@@ -19,7 +19,7 @@ export default class ExampleLayoutWebix extends Module {
     this.eventHandler();
   }
 
-  eventHandler() {
+  eventHandler () {
     this.Content.$$on('openMenu', () => {
       this.Menu.show();
     });
@@ -32,15 +32,15 @@ export default class ExampleLayoutWebix extends Module {
     this.Content.$$on('onShowGlobalWnd', () => this.$$gemit('showGlobalWnd'));
   }
 
-  dispatcher(path, state) {
+  dispatcher (path, state) {
     console.log('dispatcher', this.constructor.name, path, state);
   }
 
-  mounted(module, layout) {
+  mounted (module, layout) {
     console.log('mounted', this.constructor.name, module, layout);
   }
 
-  destroy() {
+  destroy () {
     this.Content.app.destructor();
     this.Menu.app.destructor();
   }

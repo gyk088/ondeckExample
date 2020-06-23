@@ -4,19 +4,19 @@
 import 'webix/webix.css';
 import 'webix/skins/mini.min.css';
 import * as webix from 'webix';
-import RootModule from 'OneDeckCore/root.module';
+import Onedeck from 'onedeck';
 import axios from 'axios';
 import ExampleNotification from 'ExampleNotification/module';
 import ExampleGlobalWnd from 'ExampleGlobalWnd/module';
 
-export default class Root extends RootModule {
-  init(initObj) {
-    console.log('init', this.constructor.name, initObj);
+export default class Root extends Onedeck.RootModule {
+  init (path) {
+    console.log('init', this.constructor.name, path);
 
     this.eventHandler();
   }
 
-  eventHandler() {
+  eventHandler () {
     webix.attachEvent('onAjaxError', this.ajaxError);
 
     axios.interceptors.response.use(undefined, (error) => {
@@ -39,15 +39,15 @@ export default class Root extends RootModule {
     });
   }
 
-  dispatcher(path, state) {
+  dispatcher (path, state) {
     console.log('dispatcher', this.constructor.name, path, state);
   }
 
-  mounted(module, layout) {
+  mounted (module, layout) {
     console.log('mounted', this.constructor.name, module, layout);
   }
 
-  exampleAction(exampleData) {
+  exampleAction (exampleData) {
     webix.confirm({
       title: 'EXAMPLE EVENT',
       ok: 'Yes',
@@ -57,7 +57,7 @@ export default class Root extends RootModule {
     });
   }
 
-  ajaxError(text) {
+  ajaxError (text) {
     webix.confirm({
       title: 'SERVER ERROR',
       ok: 'Yes',
