@@ -1,43 +1,71 @@
-import QuasarConfif from "./quasar.config"
-import WebixApp from "ExampleWebix/webix.main"
-import VueApp from "ExampleVue/vue.main"
-import ReactApp from "ExampleReact/react.main"
-import ExampleRootVue from "ExampleRootVue/root.main"
-import ExampleRootWebix from "ExampleRootWebix/root.main"
-import ExampleAuth from "ExampleAuth/auth.main"
+import ExampleRoot from 'ExampleRoot/root';
+import QuasarConfif from './quasar.config';
 
-QuasarConfif()
+QuasarConfif();
 
 export default {
-  apiUrl: "http://localhost:3000/api/",
+  historyApi: false,
+  apiUrl: API_PREFIX,
+  version: VERSION,
+  rootPath: ROOT_PATH, // корневой путь для приложения
+  rootModule: ExampleRoot,
+  mainModule: 'main',
+  module404: 'notfound',
+  import: async (module) => await import(`./modules/${module}/module`),
   modules: {
-    root: {
-      name: "root",
-      hidden: true,
-      class: window.innerWidth < 1300 ? ExampleRootVue : ExampleRootWebix
-    },
     auth: {
-      name: "auth",
-      hidden: true,
-      class: ExampleAuth
+      module: 'ExampleAuth',
+      name: 'Auth page',
+      icon: 'fa-camera',
     },
     main: {
-      name: "webixApp",
-      hidden: false,
-      icon: "fa-camera",
-      class: WebixApp
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleWebix',
+      name: 'Webix App',
+      icon: 'fa-camera',
+      embed: {
+        example: {
+          module: 'ExampleEmbed',
+        },
+      },
     },
     vueApp: {
-      name: "vueApp",
-      hidden: false,
-      icon: "mdi-watch-import-variant",
-      class: VueApp
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleVue',
+      name: 'Vue App',
+      icon: 'mdi-watch-import-variant',
+      embed: {
+        example: {
+          module: 'ExampleEmbed',
+        },
+      },
     },
     reactApp: {
-      name: "reactApp",
-      hidden: false,
-      icon: "fa-address-book",
-      class: ReactApp
-    }
-  }
-}
+      layout: 'ExampleLayoutVue',
+      module: 'ExampleReact',
+      name: 'React App',
+      icon: 'fa-address-book',
+    },
+    notfound: {
+      layout: 'ExampleLayoutWebix',
+      module: 'ExampleError404',
+      name: 'Not found page',
+      icon: 'fa-address-book',
+    },
+    globalwnd: {
+      global: true,
+      module: 'ExampleGlobalWnd',
+      icon: 'fa-address-book',
+      embed: {
+        example: {
+          module: 'ExampleEmbedGlobal',
+        },
+      },
+    },
+    globalnotification: {
+      global: true,
+      module: 'ExampleNotification',
+      icon: 'fa-address-book',
+    },
+  },
+};

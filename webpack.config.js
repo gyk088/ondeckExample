@@ -1,12 +1,12 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WebpackMd5Hash = require("webpack-md5-hash");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const childProcess = require("child_process");
+const { readdirSync } = require('fs')
 const webpackConstants = require("./webpack.constants");
-const { API_PREFIX, GOOGLE_KEY, WSP_PREFIX } = webpackConstants;
+const { API_PREFIX, GOOGLE_KEY, WSP_PREFIX, ROOT_PATH, DEV_PORT } = webpackConstants;
 let { version } = require("./package.json");
 
 /* Для отображения версии приложения + коммита при запуске приложения */
@@ -19,24 +19,63 @@ try {
   // Если не удалось узнать хэш текущей фиксации, игнорируем ошибку.
 }
 
+const modules = {}
+try {
+  const capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
+
+  readdirSync(path.resolve(__dirname, "src/modules/")).forEach(m => {
+    modules[capitalize(m)] = path.resolve(__dirname, `src/modules/${m}`)
+    console.info(`\x1b[37m Prepare module: \x1b[33m ${m}`)
+  })
+} catch (e) {
+  console.error('\x1b[31m', e.toString())
+  process.exit()
+}
+
+console.info(`\x1b[37m Project is running at \x1b[32m http://localhost:${DEV_PORT}/ \x1b[37m`)
+
+const PATHS = {
+  src: path.resolve(__dirname, "src/"),
+  dist: path.resolve(__dirname, "dist/"),
+  images: path.resolve(__dirname, "src/images/"),
+  core: path.resolve(__dirname, "src/core/"),
+}
+
 module.exports = {
-  entry: { main: "./src/index.js" },
+  entry: ["@babel/polyfill", "./src/index.js"],
   output: {
     filename: "[name].[hash].js",
-    path: path.resolve(__dirname, "dist")
+    path: PATHS.dist,
   },
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
-    port: 9000
+  optimization: {
+    minimize: false,
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          name: 'vendors',
+          test: /node_modules/,
+          chunks: 'all',
+          enforce: true,
+        }
+      }
+    }
   },
   devtool: "source-map",
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    port: DEV_PORT,
+    historyApiFallback: true,
+    noInfo: true
+  },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        include: path.resolve(__dirname, "src/"),
+        include: PATHS.src,
         use: {
           loader: "babel-loader",
           options: {
@@ -97,42 +136,26 @@ module.exports = {
   },
   resolve: {
     alias: {
-      Images: path.resolve(__dirname, "src/images/"),
-      OneDeckCore: path.resolve(__dirname, "src/core/"),
-      ExampleRootWebix: path.resolve(
-        __dirname,
-        "src/modules/exampleRootWebix/"
-      ),
-      ExampleReact: path.resolve(__dirname, "src/modules/exampleReact/"),
-      ExampleVue: path.resolve(__dirname, "src/modules/exampleVue/"),
-      ExampleWebix: path.resolve(__dirname, "src/modules/exampleWebix/"),
-      ExampleRootVue: path.resolve(__dirname, "src/modules/exampleRootVue/"),
-      ExampleAuth: path.resolve(__dirname, "src/modules/exampleAuth/")
+      Images: PATHS.images,
+      ...modules,
     }
-  },
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    port: 9001,
-    historyApiFallback: true,
-    noInfo: true
   },
   plugins: [
     new webpack.DefinePlugin({
       API_PREFIX: JSON.stringify(API_PREFIX),
       WSP_PREFIX: JSON.stringify(WSP_PREFIX),
       GOOGLE_KEY: JSON.stringify(GOOGLE_KEY),
-      VERSION: JSON.stringify(version)
+      VERSION: JSON.stringify(version),
+      ROOT_PATH: JSON.stringify(ROOT_PATH),
     }),
     new MiniCssExtractPlugin({
       filename: "style.[hash].css"
     }),
     new HtmlWebpackPlugin({
-      inject: false,
       hash: true,
       template: "./src/index.html",
       filename: "index.html"
     }),
-    new WebpackMd5Hash(),
     new VueLoaderPlugin()
   ]
 };

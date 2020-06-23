@@ -1,1 +1,1 @@
-export const images = require.context("./", false, /\.(png|jpe?g|svg)$/)
+export default require.context('./', false, /\.(png|jpe?g|svg)$/);
