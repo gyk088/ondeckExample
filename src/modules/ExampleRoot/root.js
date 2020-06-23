@@ -61,6 +61,7 @@ export default class Root extends Onedeck.RootModule {
     webix.confirm({
       title: 'SERVER ERROR',
       ok: 'Yes',
+      width: 630,
       cancel: 'No',
       type: 'confirm-error',
       text: text || 'Please reload the page',
