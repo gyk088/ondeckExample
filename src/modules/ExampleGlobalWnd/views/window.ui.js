@@ -7,7 +7,7 @@ export default class WindowGlobalUI {
     return this.ui();
   }
 
-  ui () {
+  ui() {
     return {
       id: this.id,
       view: 'window',

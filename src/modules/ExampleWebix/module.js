@@ -9,38 +9,44 @@ import Onedeck from 'onedeck';
  * module use Webix
  */
 export default class ExampleWebix extends Onedeck.Module {
-  init (path, state) {
-    console.log('init', this.constructor.name, path, state);
+  init(path, state) {
+    // console.log('init', this.constructor.name, path, state);
 
     this.Table = new Table();
 
     this.eventHandler();
   }
 
-  destroy () {
+  destroy() {
     this.Table.destroy();
   }
 
-  eventHandler () {
+  eventHandler() {
     // Открыть меню
-    this.Table.$$on('onClickRow', (row) => this.$$rout({
-      path: `/main/item/${row.id}`,
-      state: row,
-    }));
+    this.Table.$$on('onClickRow', (row) => {
+      this.$$route({
+        path: `/main/item/${row.id}`,
+        state: row,
+      });
+    });
   }
 
-  dispatcher (path, state) {
-    console.log('dispatcher', this.constructor.name, path, state);
+  watchTest1(data) {
+    this.showItem(data.newValue, data.newValue.id);
+  }
+
+  dispatcher(path, state) {
+    // console.log('dispatcher', this.constructor.name, path, state);
 
     if (!path) return;
     if (path[1] === 'item') this.showItem(state, path[2]);
   }
 
-  mounted (module, layout) {
-    console.log('mounted', this.constructor.name, module, layout);
+  mounted(module, layout) {
+    // console.log('mounted', this.constructor.name, module, layout);
   }
 
-  showItem (state, id) {
+  showItem(state, id) {
     let text = '';
     if (state) {
       Object.keys(state).forEach((key) => {
@@ -57,7 +63,9 @@ export default class ExampleWebix extends Onedeck.Module {
       type: 'confirm-error',
       text,
       callback: (result) => {
-        if (result) console.log('OK');
+        if (result) {
+          // console.log('OK');
+        }
       },
     });
   }

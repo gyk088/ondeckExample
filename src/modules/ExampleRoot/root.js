@@ -10,13 +10,35 @@ import ExampleNotification from 'ExampleNotification/module';
 import ExampleGlobalWnd from 'ExampleGlobalWnd/module';
 
 export default class Root extends Onedeck.RootModule {
-  init (path) {
-    console.log('init', this.constructor.name, path);
+  initState() {
+    return {
+      test1: {
+        test3: null,
+        test4: null,
+      },
+      test2: {
+        test5: null,
+        test6: null,
+      },
+      token: 'asdasdsdasdas',
+    };
+  }
 
+  init(path) {
+
+    // console.log('init', this.constructor.name, path);
+    this.$$gstore.watchers.test1.add('test', (data) => {
+      console.log('11111111111111111');
+      console.log(data);
+      console.log('11111111111111111');
+    });
+
+   //  this.$$gstore.watchers.test1.remove('test');
+    this.$$gstore.state.test1 = '23233222332';
     this.eventHandler();
   }
 
-  eventHandler () {
+  eventHandler() {
     webix.attachEvent('onAjaxError', this.ajaxError);
 
     axios.interceptors.response.use(undefined, (error) => {
@@ -39,15 +61,15 @@ export default class Root extends Onedeck.RootModule {
     });
   }
 
-  dispatcher (path, state) {
-    console.log('dispatcher', this.constructor.name, path, state);
+  dispatcher(path, state) {
+    // console.log('dispatcher', this.constructor.name, path, state);
   }
 
-  mounted (module, layout) {
-    console.log('mounted', this.constructor.name, module, layout);
+  mounted(module, layout) {
+    // console.log('mounted', this.constructor.name, module, layout);
   }
 
-  exampleAction (exampleData) {
+  exampleAction(exampleData) {
     webix.confirm({
       title: 'EXAMPLE EVENT',
       ok: 'Yes',
@@ -57,7 +79,7 @@ export default class Root extends Onedeck.RootModule {
     });
   }
 
-  ajaxError (text) {
+  ajaxError(text) {
     webix.confirm({
       title: 'SERVER ERROR',
       ok: 'Yes',

@@ -39,7 +39,7 @@ export default {
     ...mapMutations(['select']),
 
     getSelectedString() {
-      module = new Module()
+      module = new Module();
       module.$$emit('onRowClick', this.selected);
     },
   },

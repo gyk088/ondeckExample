@@ -11,9 +11,9 @@ const defaultState = () => ({
 export default new Vuex.Store({
   state: defaultState(),
   mutations: {
-    setData (state, str) {
-      module = new Module()
-      module.$$emit('notify', `${state.data} + ${str}`)
+    setData(state, str) {
+      module = new Module();
+      module.$$emit('notify', `${state.data} + ${str}`);
       Vue.set(state, 'data', `${state.data} + ${str}`);
     },
   },

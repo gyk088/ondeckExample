@@ -6,31 +6,31 @@ import Onedeck from 'onedeck';
  * module use Vue and Quasar
  */
 export default class ExampleVue extends Onedeck.Module {
-  init (path, state) {
-    console.log('init', this.constructor.name, path, state);
+  init(path, state) {
+    // console.log('init', this.constructor.name, path, state);
     // Инициализируем приложение модуля
     this.VueApp = new Vue(VueApp);
 
     this.eventHandler();
   }
 
-  eventHandler () {
+  eventHandler() {
     // По клику на строчку в таблице переходим на новый url
-    this.$$on('onRowClick', (row) => this.$$rout({
+    this.$$on('onRowClick', (row) => this.$$route({
       path: `/main/item/${row[0].id}`,
       state: row[0],
     }));
   }
 
-  dispatcher (path, state) {
-    console.log('dispatcher', this.constructor.name, path, state);
+  dispatcher(path, state) {
+    // console.log('dispatcher', this.constructor.name, path, state);
   }
 
-  mounted (module, layout) {
-    console.log('mounted', this.constructor.name, module, layout);
+  mounted(module, layout) {
+    // console.log('mounted', this.constructor.name, module, layout);
   }
 
-  destroy () {
+  destroy() {
     // Уничтожаем приложение модуля
     this.VueApp.$destroy();
     // Чистим DOM дерево, куда был встроем модуль

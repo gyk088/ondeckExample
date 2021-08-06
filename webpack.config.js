@@ -41,6 +41,7 @@ const PATHS = {
   src: path.resolve(__dirname, "src/"),
   dist: path.resolve(__dirname, "dist/"),
   images: path.resolve(__dirname, "src/images/"),
+  onedeck: path.resolve(__dirname, "src/onedeck/"),
   core: path.resolve(__dirname, "src/core/"),
 }
 
@@ -137,6 +138,7 @@ module.exports = {
   resolve: {
     alias: {
       Images: PATHS.images,
+      onedeck: PATHS.onedeck,
       ...modules,
     }
   },

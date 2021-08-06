@@ -7,7 +7,7 @@ module.exports = {
   WSP_PREFIX: "wss://wsp.test.com:8081/",
   // Ключ доступа к Google Maps API. Получить новый можно в консоли
   // разработчика. https://console.developers.google.com/apis/credentials
-  GOOGLE_KEY: "#################################"
+  GOOGLE_KEY: "#################################",
   // Путь от которого стартует приложение history api
   ROOT_PATH: '/example/path/',
   // Порт для dev сервера

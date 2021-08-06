@@ -12,13 +12,15 @@
     "plugin:vue/recommended"
   ],
   "rules": {
+    "max-len": ["error", { "code": 170 }],
     "no-console": "off",
     "import/no-unresolved": "off",
     "class-methods-use-this": "off",
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "no-plusplus": "off",
-    "no-useless-escape": "off"
+    "no-useless-escape": "off",
+    "max-classes-per-file": "off"
   },
   "globals": {
     "API_PREFIX": "readonly",

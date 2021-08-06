@@ -15,7 +15,7 @@ export default class RootContent extends Onedeck.Observable {
     this.eventHandler();
   }
 
-  eventHandler () {
+  eventHandler() {
     $$(`${this.id}MenuOpenBtn`).attachEvent('onItemClick', () => this.$$emit('openMenu'));
     $$(`${this.id}GlobalWndBtn`).attachEvent('onItemClick', () => this.$$emit('onShowGlobalWnd'));
   }

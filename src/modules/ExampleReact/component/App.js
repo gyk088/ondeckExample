@@ -17,13 +17,23 @@ export default class App extends React.Component {
     const module = new Module();
     this.setState(calculate(this.state, buttonName));
     if (buttonName === '=' && this.state.total) {
-      module.$$emit('onSumm', this.state.total);
+      module.$$gemit('examplEvent',  this.state.total)
+      console.log(module.$$gstore)
+      // module.$$emit('onSumm', this.state.total);
     }
 
     module.$$emit('notify', buttonName);
   }
 
+  test = () => {
+    const module = new Module();
+    module.$$gstore.watchers.token.add('testWatcher', (data) => {
+      console.log('REACT', data)
+    })
+  }
+
   render() {
+    this.test()
     return (
       <div className="component-app">
         <Display value={this.state.next || this.state.total || '0'} />

@@ -28,9 +28,9 @@ export default {
   methods: {
     ...mapMutations(['setData']),
     notify() {
-      const module = new Module()
-      module.$$emit('notify', this.data)
-    }
+      const module = new Module();
+      module.$$emit('notify', this.data);
+    },
   },
 };
 </script>

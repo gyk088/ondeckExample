@@ -17,19 +17,19 @@ export default class Table extends Onedeck.Observable {
     this.loadData();
   }
 
-  destroy () {
+  destroy() {
     this.app.destructor();
   }
 
-  eventHandler () {
+  eventHandler() {
     $$(this.id).attachEvent('onAfterSelect', (id) => this.$$emit('onClickRow', $$(this.id).getItem(id.row)));
   }
 
-  loadData () {
+  loadData() {
     $$(this.id).parse(this.exampleData());
   }
 
-  exampleData () {
+  exampleData() {
     return [
       {
         id: '1',

@@ -17,7 +17,7 @@ export default class Menu extends Onedeck.Observable {
     this.createMenu();
   }
 
-  eventHandler () {
+  eventHandler() {
     $$(`${this.id}List`).attachEvent('onAfterSelect', (key) => {
       $$(this.id).hide();
       this.$$emit('initModule', {
@@ -27,7 +27,7 @@ export default class Menu extends Onedeck.Observable {
     });
   }
 
-  createMenu () {
+  createMenu() {
     const menu = [];
     const module = new Module();
     Object.keys(module.$$config.modules).forEach((key) => {
@@ -44,7 +44,7 @@ export default class Menu extends Onedeck.Observable {
     $$(`${this.id}List`).parse(menu);
   }
 
-  show () {
+  show() {
     if ($$(this.id).config.hidden) {
       $$(this.id).show();
     } else {
