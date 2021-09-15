@@ -25,24 +25,25 @@ export default class Root extends Onedeck.RootModule {
   }
 
   init(path) {
-
     // console.log('init', this.constructor.name, path);
     this.$$gstore.watchers.test1.add('test', (data) => {
-      console.log('11111111111111111');
       console.log(data);
-      console.log('11111111111111111');
     });
 
-   //  this.$$gstore.watchers.test1.remove('test');
+    //  this.$$gstore.watchers.test1.remove('test');
     this.$$gstore.state.test1 = '23233222332';
     this.eventHandler();
+    this.wnd = new ExampleGlobalWnd();
+    this.notify = new ExampleNotification();
+
+    console.log(this.notify)
   }
 
   eventHandler() {
     webix.attachEvent('onAjaxError', this.ajaxError);
 
     axios.interceptors.response.use(undefined, (error) => {
-      this.ajaxError(error.response.data);
+      this.ajaxError('Request error');
       return Promise.reject(error);
     });
 
@@ -51,13 +52,12 @@ export default class Root extends Onedeck.RootModule {
     });
 
     this.$$on('showGlobalWnd', () => {
-      const wnd = new ExampleGlobalWnd();
-      wnd.show();
+      this.wnd.show();
     });
 
     this.$$on('notify', (text) => {
-      const notifyObj = new ExampleNotification();
-      notifyObj.notify(text);
+      console.log('notify', text);
+      this.notify.notify(text);
     });
   }
 

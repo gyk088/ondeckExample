@@ -4,32 +4,33 @@ import QuasarConfif from './quasar.config';
 QuasarConfif();
 
 export default {
-  historyApi: false,
+  historyApi: true,
   apiUrl: API_PREFIX,
   version: VERSION,
   rootPath: ROOT_PATH, // корневой путь для приложения
   rootModule: ExampleRoot,
   mainModule: 'main',
   module404: 'notfound',
+  rootElementId: 'ROOT',
   import: async (module) => await import(`./modules/${module}/module`),
   modules: {
-    'auth': {
+    auth: {
       module: 'ExampleAuth',
       name: 'Auth page',
-      icon: 'fa-camera'
+      icon: 'fa-camera',
     },
-    'main': {
+    main: {
       layout: 'ExampleLayoutWebix',
       module: 'ExampleWebix',
       name: 'Webix App',
       icon: 'fa-camera',
-      embed: {
-        example: {
-          module: 'ExampleEmbed',
-        },
-      },
+      // embed: {
+      //   example: {
+      //     module: 'ExampleEmbed',
+      //   },
+      // },
     },
-    'vueApp': {
+    vueApp: {
       layout: 'ExampleLayoutWebix',
       module: 'ExampleVue',
       name: 'Vue App',
@@ -40,19 +41,19 @@ export default {
         },
       },
     },
-    'reactApp': {
+    reactApp: {
       layout: 'ExampleLayoutVue',
       module: 'ExampleReact',
       name: 'React App',
       icon: 'fa-address-book',
     },
-    'notfound': {
+    notfound: {
       layout: 'ExampleLayoutWebix',
       module: 'ExampleError404',
       name: 'Not found page',
       icon: 'fa-address-book',
     },
-    'globalwnd': {
+    globalwnd: {
       global: true,
       module: 'ExampleGlobalWnd',
       icon: 'fa-address-book',

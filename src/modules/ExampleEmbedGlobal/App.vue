@@ -16,7 +16,7 @@
 <script>
 import store from 'ExampleEmbedGlobal/store';
 import { mapState, mapMutations } from 'vuex';
-import  ExampleEmbedGlobal from 'ExampleEmbedGlobal/module';
+import ExampleEmbedGlobal from 'ExampleEmbedGlobal/module';
 
 export default {
   el: '#EmbedWnd',
@@ -30,11 +30,11 @@ export default {
   methods: {
     ...mapMutations(['setData']),
     test() {
-      const module = new ExampleEmbedGlobal()
-      console.log(module)
-      module.$$gstore.state.token = '2322323'
-      this.$emit('notify')
-    }
+      const module = new ExampleEmbedGlobal();
+      console.log(module);
+      module.$$gstore.state.token = '2322323';
+      this.$emit('notify');
+    },
   },
 };
 </script>

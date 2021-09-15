@@ -1,0 +1,24 @@
+.notify {
+    /* defaults */
+    --notify-error: #eb5757;
+    --notify-success: #6fcf97;
+    --notify-warning: #f2c94c;
+    --notify-gray: #333333;
+    --notify-gray-2: #4d4d4d;
+    --notify-gray-3: #828282;
+    --notify-white: #fff;
+    --notify-white-2: rgba(255, 255, 255, 0.8);
+    --notify-padding: 10px;
+    --notify-icon-size: 32px;
+    --notify-close-icon-size: 16px;
+    font-size: 11px;
+  }
+
+.notify__text {
+    font-size: 14px;
+    margin-top: 0.25rem;
+}
+
+.notify__title {
+    font-size: 16px;
+}
