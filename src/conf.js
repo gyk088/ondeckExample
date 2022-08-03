@@ -1,7 +1,7 @@
 import ExampleRoot from 'ExampleRoot/root';
 
 export default {
-  historyApi: true,
+  historyApi: false,
   apiUrl: API_PREFIX,
   version: VERSION,
   rootPath: ROOT_PATH, // корневой путь для приложения
