@@ -15,7 +15,6 @@
 <script>
 
 export default {
-  el: '#ROOT',
   name: 'VueApp',
   methods: {
     auth() {

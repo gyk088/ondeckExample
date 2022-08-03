@@ -9,6 +9,8 @@ export default class ExampleVue extends Onedeck.Module {
   init(path, state) {
     // console.log('init', this.constructor.name, path, state);
     // Инициализируем приложение модуля
+
+    VueApp.el = `#${this.$$mountId}`;
     this.VueApp = new Vue(VueApp);
 
     this.eventHandler();
@@ -16,10 +18,12 @@ export default class ExampleVue extends Onedeck.Module {
 
   eventHandler() {
     // По клику на строчку в таблице переходим на новый url
-    this.$$on('onRowClick', (row) => this.$$route({
-      path: `/main/item/${row[0].id}`,
-      state: row[0],
-    }));
+    this.$$on('onRowClick', (row) => {
+      this.$$route({
+        path: `/main/item/${row[0].id}`,
+        state: row[0],
+      });
+    });
   }
 
   dispatcher(path, state) {

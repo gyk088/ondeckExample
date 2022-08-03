@@ -8,6 +8,7 @@ import Onedeck from 'onedeck';
 import axios from 'axios';
 import ExampleNotification from 'ExampleNotification/module';
 import ExampleGlobalWnd from 'ExampleGlobalWnd/module';
+import QuasarConfif from './quasar.config';
 
 export default class Root extends Onedeck.RootModule {
   initState() {
@@ -25,18 +26,20 @@ export default class Root extends Onedeck.RootModule {
   }
 
   init(path) {
-    // console.log('init', this.constructor.name, path);
+    QuasarConfif();
+
+    console.log('init', this.constructor.name, path);
     this.$$gstore.watchers.test1.add('test', (data) => {
       console.log(data);
     });
 
-    //  this.$$gstore.watchers.test1.remove('test');
+    this.$$gstore.watchers.test1.remove('test');
     this.$$gstore.state.test1 = '23233222332';
-    this.eventHandler();
+
     this.wnd = new ExampleGlobalWnd();
     this.notify = new ExampleNotification();
 
-    console.log(this.notify)
+    this.eventHandler();
   }
 
   eventHandler() {
@@ -56,17 +59,16 @@ export default class Root extends Onedeck.RootModule {
     });
 
     this.$$on('notify', (text) => {
-      console.log('notify', text);
       this.notify.notify(text);
     });
   }
 
   dispatcher(path, state) {
-    // console.log('dispatcher', this.constructor.name, path, state);
+    console.log('dispatcher', this.constructor.name, path, state);
   }
 
   mounted(module, layout) {
-    // console.log('mounted', this.constructor.name, module, layout);
+    console.log('mounted', this.constructor.name, module, layout);
   }
 
   exampleAction(exampleData) {

@@ -6,6 +6,7 @@ import Quasar, {
   QToolbarTitle,
   QBtn,
   QIcon,
+  QFile,
   QLayout,
   QPageContainer,
   QPage,
@@ -26,7 +27,6 @@ import Quasar, {
   QSpace,
   QParallax,
 } from 'quasar';
-
 
 export default () => Vue.use(Quasar, {
   config: {},

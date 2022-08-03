@@ -17,7 +17,6 @@ import { mapState, mapMutations } from 'vuex';
 import Module from 'ExampleEmbed/module';
 
 export default {
-  el: '#Embed',
   name: 'EmbedApp',
   store,
   computed: {

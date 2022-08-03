@@ -42,7 +42,6 @@ class Watchers {
   }
 
   /**
-   * Приватный метод. </br>
    * Выполнить все callback функции
    *
    * @param {object} data - название название наблюдателя.
@@ -51,7 +50,7 @@ class Watchers {
    * @param {object} data.state - текущий стейт.
    * @private
    */
-  _emit(data) {
+  emit(data) {
     for (const name in this._listeners) {
       this._listeners[name](data);
     }
@@ -97,7 +96,7 @@ class Store {
       get: (target, name) => target[name],
       set: (obj, prop, value) => {
         if (prop in this.watchers) {
-          this.watchers[prop]._emit({
+          this.watchers[prop].emit({
             newValue: value,
             oldValue: obj[prop],
             state: obj,

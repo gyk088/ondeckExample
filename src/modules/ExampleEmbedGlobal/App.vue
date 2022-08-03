@@ -1,6 +1,6 @@
 <template>
   <div
-    id="Embed"
+    id="EmbedWnd"
     class="embed-block"
   >
     <q-btn
@@ -19,7 +19,6 @@ import { mapState, mapMutations } from 'vuex';
 import ExampleEmbedGlobal from 'ExampleEmbedGlobal/module';
 
 export default {
-  el: '#EmbedWnd',
   name: 'EmbedAppWnd',
   store,
   computed: {

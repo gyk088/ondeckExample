@@ -18,6 +18,7 @@ export default class Table extends Onedeck.Observable {
   }
 
   destroy() {
+    console.log('2222222222222222222');
     this.app.destructor();
   }
 

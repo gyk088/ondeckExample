@@ -59,6 +59,7 @@
 
       <q-page-container>
         <div id="MainContent" />
+        <div id="Embed" />
       </q-page-container>
     </q-layout>
   </div>

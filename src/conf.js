@@ -1,7 +1,4 @@
 import ExampleRoot from 'ExampleRoot/root';
-import QuasarConfif from './quasar.config';
-
-QuasarConfif();
 
 export default {
   historyApi: true,
@@ -15,28 +12,33 @@ export default {
   import: async (module) => await import(`./modules/${module}/module`),
   modules: {
     auth: {
+      mountId: 'ROOT',
       module: 'ExampleAuth',
       name: 'Auth page',
       icon: 'fa-camera',
     },
     main: {
-      layout: 'ExampleLayoutWebix',
+      layout: 'ExampleLayoutVue',
+      mountId: 'MainContent',
       module: 'ExampleWebix',
       name: 'Webix App',
       icon: 'fa-camera',
-      // embed: {
-      //   example: {
-      //     module: 'ExampleEmbed',
-      //   },
-      // },
+      embed: {
+        example: {
+          mountId: 'Embed',
+          module: 'ExampleEmbed',
+        },
+      },
     },
     vueApp: {
       layout: 'ExampleLayoutWebix',
       module: 'ExampleVue',
+      mountId: 'MainContent',
       name: 'Vue App',
       icon: 'mdi-watch-import-variant',
       embed: {
         example: {
+          mountId: 'Embed',
           module: 'ExampleEmbed',
         },
       },
@@ -44,13 +46,21 @@ export default {
     reactApp: {
       layout: 'ExampleLayoutVue',
       module: 'ExampleReact',
+      mountId: 'MainContent',
       name: 'React App',
       icon: 'fa-address-book',
     },
     notfound: {
+      mountId: 'MainContent',
       layout: 'ExampleLayoutWebix',
       module: 'ExampleError404',
       name: 'Not found page',
+      icon: 'fa-address-book',
+    },
+    examplePage: {
+      mountId: 'ROOT',
+      module: 'ExamplePage',
+      name: 'examplePage',
       icon: 'fa-address-book',
     },
     globalwnd: {
@@ -59,6 +69,7 @@ export default {
       icon: 'fa-address-book',
       embed: {
         example: {
+          mountId: 'EmbedWnd',
           module: 'ExampleEmbedGlobal',
         },
       },

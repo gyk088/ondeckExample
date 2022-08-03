@@ -1,8 +1,11 @@
 /**
  * Class POUI
  */
+import Module from 'ExampleWebix/module.js';
+
 export default class TableUI {
   constructor() {
+    this.module = new Module();
     this.id = 'Table';
     return this.ui();
   }
@@ -27,7 +30,7 @@ export default class TableUI {
   ui() {
     return {
       id: this.id,
-      container: 'MainContent',
+      container: this.module.$$mountId,
       view: 'treetable',
       select: 'row',
       selected: true,

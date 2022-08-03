@@ -37,43 +37,12 @@ export default class Core {
     this.$$gstore = new Stroe(this.root.initState());
     this.root.$$gstore = this.$$gstore;
 
-    this._clear().then(() => { this.init(); });
-  }
 
-
-  async init() {
-    try {
-      await this.initGlobalModules();
-    } catch (e) {
-      console.error('Error init global module', e);
+    if (this.$$config.ssr) {
+      this._clear().then(() => { this.init(); });
+    } else {
+      this.init();
     }
-
-    // вызываем глобаьное событие popstate
-    this.router.eventHandler();
-
-    // получаем массив с данными из url
-    const urlData = this.router.getModuleFromUrl(
-      this.$$config.historyApi
-      ?  document.location.pathname + document.location.search
-      : document.location.hash + document.location.search,
-    );
-
-    this.$$config.isSSR = urlData.params.ssr;
-
-
-    if (this.$$config.isSSR) {
-      return;
-    }
-
-    // вызывам метод init для модуля root
-    this.root.init(urlData.url, urlData.params);
-
-    // current module initialization
-    this.initModule({
-      module: urlData.url,
-      queryParam: urlData.params,
-      path: document.location.pathname,
-    });
   }
 
   _clear() {
@@ -82,10 +51,38 @@ export default class Core {
         const scripts = document.querySelectorAll('script');
         document.body.innerHTML = `<div id="${this.$$config.rootElementId}"></div>`;
         if (NodeList.prototype.isPrototypeOf(scripts)) {
-          scripts.forEach(s => document.body.appendChild(s));
+          scripts.forEach((s) => document.body.appendChild(s));
         }
         resolve();
       });
+    });
+  }
+
+  async init() {
+    // получаем массив с данными из url
+    const urlData = this.router.getModuleFromUrl(
+      this.$$config.historyApi
+        ? document.location.pathname + document.location.search
+        : document.location.hash + document.location.search,
+    );
+
+    // вызываем глобаьное событие popstate
+    this.router.eventHandler();
+
+    // вызывам метод init для модуля root
+    this.root.init(urlData.url, urlData.params);
+
+    try {
+      await this.initGlobalModules();
+    } catch (e) {
+      console.error('Error init global module', e);
+    }
+
+    // current module initialization
+    this.initModule({
+      module: urlData.url,
+      queryParam: urlData.params,
+      path: document.location.pathname,
     });
   }
 
@@ -180,8 +177,6 @@ export default class Core {
   initGlobalModules = async () => {
     const globalNames = Object.keys(this.$$config.modules)
       .filter((moduleName) => this.$$config.modules[moduleName].global);
-      console.log(globalNames)
-
     for (let i = 0; i < globalNames.length; i++) {
       // eslint-disable-next-line
       await this.createModule(globalNames[i], this.$$config.modules[globalNames[i]])
@@ -217,6 +212,10 @@ export default class Core {
     this.modules[moduleName].$$gstore = this.$$gstore;
     // конфиг
     this.modules[moduleName].$$config = this.$$config;
+    // id элемента куда модуль встраивается
+    this.modules[moduleName].$$mountId = moduleConf.mountId;
+    // id элемента куда встроено приложение
+    this.modules[moduleName].$$rootElementId = this.$$config.rootElementId;
 
     // макет модуля
     this.modules[moduleName].$$layoutName = moduleConf.layout;
@@ -239,6 +238,8 @@ export default class Core {
         this.modules[moduleName].$$embed[embedNames[i]].$$gemit = this.root.$$emit.bind(this.root);
         this.modules[moduleName].$$embed[embedNames[i]].$$gstore = this.$$gstore;
         this.modules[moduleName].$$embed[embedNames[i]].$$config = this.$$config;
+        this.modules[moduleName].$$embed[embedNames[i]].$$rootElementId = this.$$config.rootElementId;
+        this.modules[moduleName].$$embed[embedNames[i]].$$mountId = moduleConf.embed[embedNames[i]].mountId;
       }
     }
 
@@ -280,6 +281,7 @@ export default class Core {
     this.layouts[layoutName].$$gstore = this.$$gstore;
     // конфиг
     this.layouts[layoutName].$$config = this.$$config;
+    this.layouts[layoutName].$$rootElementId = this.$$config.rootElementId;
   }
 
   /**

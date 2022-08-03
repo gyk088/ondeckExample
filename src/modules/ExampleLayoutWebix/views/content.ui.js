@@ -1,13 +1,18 @@
 /**
  * Class ContentUI
  */
+
+import Module from 'ExampleLayoutWebix/module';
+
 export default class ContentUI {
   constructor() {
     this.id = 'Content';
+    this.module = new Module();
     return this.ui();
   }
 
   content() {
+    console.log('ExampleLayoutWebix', this.module);
     return {
       template: '<div id="MainContent"></div><div id="Embed"></div>',
     };
@@ -29,7 +34,7 @@ export default class ContentUI {
 
   ui() {
     return {
-      container: 'ROOT',
+      container: this.module.$$rootElementId,
       id: this.id,
       rows: [this.toolBar(), this.content()],
     };

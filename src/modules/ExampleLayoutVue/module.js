@@ -8,6 +8,8 @@ import Onedeck from 'onedeck';
 export default class ExampleLayoutVue extends Onedeck.Module {
   init(path, state) {
     // console.log('init', this.constructor.name, path, state);
+    console.log(this);
+    VueApp.el = `#${this.$$rootElementId}`;
     this.VueApp = new Vue(VueApp);
 
     this.eventHandler();

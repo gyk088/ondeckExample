@@ -10,6 +10,9 @@ export default class ExampleEmbed extends Onedeck.Module {
   init(path, state) {
     // console.log('init', this.constructor.name, path, state);
 
+    console.log('this.$$mountId', this.$$mountId);
+
+    App.el = `#${this.$$mountId}`;
     this.VueApp = new Vue(App);
 
     this.listeners = {

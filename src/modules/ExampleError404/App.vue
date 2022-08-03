@@ -18,7 +18,6 @@
 <script>
 
 export default {
-  el: '#MainContent',
   name: 'VueApp',
   methods: {
     auth() {

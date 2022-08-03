@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Module from 'ExampleVue/module';
 
 Vue.use(Vuex);
 
@@ -146,10 +147,74 @@ const defaultState = () => ({
       iron: '6%',
     },
   ],
+  vTableHeader: [
+    {
+      key: '_vTableId',
+      title: '№',
+      width: '7%',
+      filter: true,
+      sort: true,
+      template: (row, index) => {
+        if (row.number % 2 !== 0) {
+          return `<div style="color: red">${row._vTableId}<div>`;
+        }
+        return row._vTableId;
+      },
+    },
+    {
+      key: 'Url__c',
+      title: 'Url',
+      width: '28%',
+      filter: true,
+      sort: true,
+    },
+    {
+      key: 'StatusCode__c',
+      title: 'StatusCode',
+      width: '10%',
+      sort: true,
+      filter: true,
+    },
+    {
+      key: 'ClassName__c',
+      title: 'ClassName',
+      width: '20%',
+      filter: true,
+    },
+    {
+      key: 'date',
+      title: 'Date',
+      width: '20%',
+      filter: true,
+      sort: true,
+      template(row, index) {
+        if (row.date) {
+          return row.date.toLocaleString();
+        }
+        return '-';
+      },
+    },
+    {
+      key: 'requestTime',
+      title: 'Time',
+      width: '15%',
+      sort: true,
+      filter: true,
+    },
+  ],
 });
 
 export default new Vuex.Store({
   state: defaultState(),
+  actions: {
+    select({ commit }, selected) {
+      commit('select', selected);
+      if (selected && selected.length) {
+        const module = new Module();
+        module.$$emit('onRowClick', selected);
+      }
+    },
+  },
   mutations: {
     select(state, selected) {
       Vue.set(state, 'selected', selected);

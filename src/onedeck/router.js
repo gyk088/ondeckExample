@@ -19,7 +19,7 @@ class Route {
     if (this.core.$$config.historyApi) {
       window.addEventListener('popstate', (event) => {
         const urlData = this.getModuleFromUrl(
-          document.location.pathname + document.location.search
+          document.location.pathname + document.location.search,
         );
         this.core.initModule({
           module: urlData.url,
@@ -31,7 +31,7 @@ class Route {
     } else {
       window.addEventListener('hashchange', () => {
         const urlData = this.getModuleFromUrl(
-          document.location.hash + document.location.search
+          document.location.hash + document.location.search,
         );
         this.core.initModule({
           module: urlData.url,

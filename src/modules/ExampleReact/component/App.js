@@ -19,7 +19,7 @@ export default class App extends React.Component {
     if (buttonName === '=' && this.state.total) {
       module.$$gemit('examplEvent', this.state.total);
       console.log(module.$$gstore);
-      // module.$$emit('onSumm', this.state.total);
+      module.$$emit('onSumm', this.state.total);
     }
 
     module.$$emit('notify', buttonName);

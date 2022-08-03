@@ -18,6 +18,7 @@ export default class ExampleWebix extends Onedeck.Module {
   }
 
   destroy() {
+    console.log('destroy');
     this.Table.destroy();
   }
 
@@ -39,7 +40,7 @@ export default class ExampleWebix extends Onedeck.Module {
     // console.log('dispatcher', this.constructor.name, path, state);
 
     if (!path) return;
-    if (path[1] === 'item') this.showItem(state, path[2]);
+    // if (path[1] === 'item') this.showItem(state, path[2]);
   }
 
   mounted(module, layout) {

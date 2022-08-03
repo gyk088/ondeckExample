@@ -10,7 +10,7 @@ export default class ExampleGlobalWnd extends Onedeck.Module {
     // console.log('init', this.constructor.name, path, state);
 
     this.Window = new WindowModule();
-    this.Window.show();
+    //this.Window.show();
   }
 
   dispatcher(path, state) {

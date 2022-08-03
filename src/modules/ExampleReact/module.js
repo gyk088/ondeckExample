@@ -5,7 +5,7 @@ import App from 'ExampleReact/component/App';
 import 'ExampleReact/index.css';
 import 'github-fork-ribbon-css/gh-fork-ribbon.css';
 import Onedeck from 'onedeck';
-import axios from 'axios';
+// import axios from 'axios';
 
 /**
  * Class ExampleReact
@@ -17,10 +17,10 @@ export default class ExampleReact extends Onedeck.Module {
 
     this.reactApp = ReactDOM.render(
       <App />,
-      document.getElementById('MainContent'),
+      document.getElementById(this.$$mountId),
     );
 
-    axios('/some.pl');
+    // axios('/some.pl');
 
     this.eventHandler();
   }

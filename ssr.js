@@ -1,15 +1,10 @@
 const puppeteer = require('puppeteer');
 
-
-
-
-// In-memory cache of rendered pages. Note: this will be cleared whenever the
-// server process stops. If you need true persistence, use something like
-// Google Cloud Storage (https://firebase.google.com/docs/storage/web/start).
 const RENDER_CACHE = new Map();
 
 async function ssr(url) {
   if (RENDER_CACHE.has(url)) {
+    console.info(`Headless rendered page ${url} in: 0 ms`);
     return { html: RENDER_CACHE.get(url), ttRenderMs: 0 };
   }
 
@@ -24,13 +19,15 @@ async function ssr(url) {
     throw new Error('page.goto/waitForSelector timed out.');
   }
 
-  const html = await page.content(); // serialized HTML of page DOM.
-  await browser.close();
+  const html = await page.content();
+
 
   const ttRenderMs = Date.now() - start;
   console.info(`Headless rendered page ${url} in: ${ttRenderMs}ms`);
 
-  RENDER_CACHE.set(url, html); // cache rendered page.
+  await browser.close();
+
+  RENDER_CACHE.set(url, html);
 
   return { html, ttRenderMs };
 }

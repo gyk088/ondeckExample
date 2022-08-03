@@ -9,7 +9,7 @@ import Vue from 'vue';
 export default class ExampleEmbedGlobal extends Onedeck.Module {
   init(path, state) {
     // console.log('init', this.constructor.name, path, state);
-
+    App.el = `#${this.$$mountId}`;
     this.VueApp = new Vue(App);
     this.eventHandler();
   }
